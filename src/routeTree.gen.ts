@@ -11,20 +11,83 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as AboutImport } from './routes/about'
+import { Route as OrganizationRouteImport } from './routes/organization/route'
 import { Route as IndexImport } from './routes/index'
+import { Route as OrganizationSettingsImport } from './routes/organization/settings'
+import { Route as OrganizationPaymentImport } from './routes/organization/payment'
+import { Route as OrganizationNetworkImport } from './routes/organization/network'
+import { Route as OrganizationMarketingImport } from './routes/organization/marketing'
+import { Route as OrganizationInsightsImport } from './routes/organization/insights'
+import { Route as OrganizationEventsImport } from './routes/organization/events'
+import { Route as OrganizationDashboardImport } from './routes/organization/dashboard'
+import { Route as authRegisterImport } from './routes/(auth)/register'
+import { Route as authLoginImport } from './routes/(auth)/login'
 
 // Create/Update Routes
 
-const AboutRoute = AboutImport.update({
-  id: '/about',
-  path: '/about',
+const OrganizationRouteRoute = OrganizationRouteImport.update({
+  id: '/organization',
+  path: '/organization',
   getParentRoute: () => rootRoute,
 } as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const OrganizationSettingsRoute = OrganizationSettingsImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => OrganizationRouteRoute,
+} as any)
+
+const OrganizationPaymentRoute = OrganizationPaymentImport.update({
+  id: '/payment',
+  path: '/payment',
+  getParentRoute: () => OrganizationRouteRoute,
+} as any)
+
+const OrganizationNetworkRoute = OrganizationNetworkImport.update({
+  id: '/network',
+  path: '/network',
+  getParentRoute: () => OrganizationRouteRoute,
+} as any)
+
+const OrganizationMarketingRoute = OrganizationMarketingImport.update({
+  id: '/marketing',
+  path: '/marketing',
+  getParentRoute: () => OrganizationRouteRoute,
+} as any)
+
+const OrganizationInsightsRoute = OrganizationInsightsImport.update({
+  id: '/insights',
+  path: '/insights',
+  getParentRoute: () => OrganizationRouteRoute,
+} as any)
+
+const OrganizationEventsRoute = OrganizationEventsImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => OrganizationRouteRoute,
+} as any)
+
+const OrganizationDashboardRoute = OrganizationDashboardImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => OrganizationRouteRoute,
+} as any)
+
+const authRegisterRoute = authRegisterImport.update({
+  id: '/(auth)/register',
+  path: '/register',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const authLoginRoute = authLoginImport.update({
+  id: '/(auth)/login',
+  path: '/login',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -39,51 +102,202 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutImport
+    '/organization': {
+      id: '/organization'
+      path: '/organization'
+      fullPath: '/organization'
+      preLoaderRoute: typeof OrganizationRouteImport
       parentRoute: typeof rootRoute
+    }
+    '/(auth)/login': {
+      id: '/(auth)/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof authLoginImport
+      parentRoute: typeof rootRoute
+    }
+    '/(auth)/register': {
+      id: '/(auth)/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof authRegisterImport
+      parentRoute: typeof rootRoute
+    }
+    '/organization/dashboard': {
+      id: '/organization/dashboard'
+      path: '/dashboard'
+      fullPath: '/organization/dashboard'
+      preLoaderRoute: typeof OrganizationDashboardImport
+      parentRoute: typeof OrganizationRouteImport
+    }
+    '/organization/events': {
+      id: '/organization/events'
+      path: '/events'
+      fullPath: '/organization/events'
+      preLoaderRoute: typeof OrganizationEventsImport
+      parentRoute: typeof OrganizationRouteImport
+    }
+    '/organization/insights': {
+      id: '/organization/insights'
+      path: '/insights'
+      fullPath: '/organization/insights'
+      preLoaderRoute: typeof OrganizationInsightsImport
+      parentRoute: typeof OrganizationRouteImport
+    }
+    '/organization/marketing': {
+      id: '/organization/marketing'
+      path: '/marketing'
+      fullPath: '/organization/marketing'
+      preLoaderRoute: typeof OrganizationMarketingImport
+      parentRoute: typeof OrganizationRouteImport
+    }
+    '/organization/network': {
+      id: '/organization/network'
+      path: '/network'
+      fullPath: '/organization/network'
+      preLoaderRoute: typeof OrganizationNetworkImport
+      parentRoute: typeof OrganizationRouteImport
+    }
+    '/organization/payment': {
+      id: '/organization/payment'
+      path: '/payment'
+      fullPath: '/organization/payment'
+      preLoaderRoute: typeof OrganizationPaymentImport
+      parentRoute: typeof OrganizationRouteImport
+    }
+    '/organization/settings': {
+      id: '/organization/settings'
+      path: '/settings'
+      fullPath: '/organization/settings'
+      preLoaderRoute: typeof OrganizationSettingsImport
+      parentRoute: typeof OrganizationRouteImport
     }
   }
 }
 
 // Create and export the route tree
 
+interface OrganizationRouteRouteChildren {
+  OrganizationDashboardRoute: typeof OrganizationDashboardRoute
+  OrganizationEventsRoute: typeof OrganizationEventsRoute
+  OrganizationInsightsRoute: typeof OrganizationInsightsRoute
+  OrganizationMarketingRoute: typeof OrganizationMarketingRoute
+  OrganizationNetworkRoute: typeof OrganizationNetworkRoute
+  OrganizationPaymentRoute: typeof OrganizationPaymentRoute
+  OrganizationSettingsRoute: typeof OrganizationSettingsRoute
+}
+
+const OrganizationRouteRouteChildren: OrganizationRouteRouteChildren = {
+  OrganizationDashboardRoute: OrganizationDashboardRoute,
+  OrganizationEventsRoute: OrganizationEventsRoute,
+  OrganizationInsightsRoute: OrganizationInsightsRoute,
+  OrganizationMarketingRoute: OrganizationMarketingRoute,
+  OrganizationNetworkRoute: OrganizationNetworkRoute,
+  OrganizationPaymentRoute: OrganizationPaymentRoute,
+  OrganizationSettingsRoute: OrganizationSettingsRoute,
+}
+
+const OrganizationRouteRouteWithChildren =
+  OrganizationRouteRoute._addFileChildren(OrganizationRouteRouteChildren)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/organization': typeof OrganizationRouteRouteWithChildren
+  '/login': typeof authLoginRoute
+  '/register': typeof authRegisterRoute
+  '/organization/dashboard': typeof OrganizationDashboardRoute
+  '/organization/events': typeof OrganizationEventsRoute
+  '/organization/insights': typeof OrganizationInsightsRoute
+  '/organization/marketing': typeof OrganizationMarketingRoute
+  '/organization/network': typeof OrganizationNetworkRoute
+  '/organization/payment': typeof OrganizationPaymentRoute
+  '/organization/settings': typeof OrganizationSettingsRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/organization': typeof OrganizationRouteRouteWithChildren
+  '/login': typeof authLoginRoute
+  '/register': typeof authRegisterRoute
+  '/organization/dashboard': typeof OrganizationDashboardRoute
+  '/organization/events': typeof OrganizationEventsRoute
+  '/organization/insights': typeof OrganizationInsightsRoute
+  '/organization/marketing': typeof OrganizationMarketingRoute
+  '/organization/network': typeof OrganizationNetworkRoute
+  '/organization/payment': typeof OrganizationPaymentRoute
+  '/organization/settings': typeof OrganizationSettingsRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/organization': typeof OrganizationRouteRouteWithChildren
+  '/(auth)/login': typeof authLoginRoute
+  '/(auth)/register': typeof authRegisterRoute
+  '/organization/dashboard': typeof OrganizationDashboardRoute
+  '/organization/events': typeof OrganizationEventsRoute
+  '/organization/insights': typeof OrganizationInsightsRoute
+  '/organization/marketing': typeof OrganizationMarketingRoute
+  '/organization/network': typeof OrganizationNetworkRoute
+  '/organization/payment': typeof OrganizationPaymentRoute
+  '/organization/settings': typeof OrganizationSettingsRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about'
+  fullPaths:
+    | '/'
+    | '/organization'
+    | '/login'
+    | '/register'
+    | '/organization/dashboard'
+    | '/organization/events'
+    | '/organization/insights'
+    | '/organization/marketing'
+    | '/organization/network'
+    | '/organization/payment'
+    | '/organization/settings'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about'
-  id: '__root__' | '/' | '/about'
+  to:
+    | '/'
+    | '/organization'
+    | '/login'
+    | '/register'
+    | '/organization/dashboard'
+    | '/organization/events'
+    | '/organization/insights'
+    | '/organization/marketing'
+    | '/organization/network'
+    | '/organization/payment'
+    | '/organization/settings'
+  id:
+    | '__root__'
+    | '/'
+    | '/organization'
+    | '/(auth)/login'
+    | '/(auth)/register'
+    | '/organization/dashboard'
+    | '/organization/events'
+    | '/organization/insights'
+    | '/organization/marketing'
+    | '/organization/network'
+    | '/organization/payment'
+    | '/organization/settings'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
+  OrganizationRouteRoute: typeof OrganizationRouteRouteWithChildren
+  authLoginRoute: typeof authLoginRoute
+  authRegisterRoute: typeof authRegisterRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
+  OrganizationRouteRoute: OrganizationRouteRouteWithChildren,
+  authLoginRoute: authLoginRoute,
+  authRegisterRoute: authRegisterRoute,
 }
 
 export const routeTree = rootRoute
@@ -97,14 +311,59 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/about"
+        "/organization",
+        "/(auth)/login",
+        "/(auth)/register"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
-    "/about": {
-      "filePath": "about.tsx"
+    "/organization": {
+      "filePath": "organization/route.tsx",
+      "children": [
+        "/organization/dashboard",
+        "/organization/events",
+        "/organization/insights",
+        "/organization/marketing",
+        "/organization/network",
+        "/organization/payment",
+        "/organization/settings"
+      ]
+    },
+    "/(auth)/login": {
+      "filePath": "(auth)/login.tsx"
+    },
+    "/(auth)/register": {
+      "filePath": "(auth)/register.tsx"
+    },
+    "/organization/dashboard": {
+      "filePath": "organization/dashboard.tsx",
+      "parent": "/organization"
+    },
+    "/organization/events": {
+      "filePath": "organization/events.tsx",
+      "parent": "/organization"
+    },
+    "/organization/insights": {
+      "filePath": "organization/insights.tsx",
+      "parent": "/organization"
+    },
+    "/organization/marketing": {
+      "filePath": "organization/marketing.tsx",
+      "parent": "/organization"
+    },
+    "/organization/network": {
+      "filePath": "organization/network.tsx",
+      "parent": "/organization"
+    },
+    "/organization/payment": {
+      "filePath": "organization/payment.tsx",
+      "parent": "/organization"
+    },
+    "/organization/settings": {
+      "filePath": "organization/settings.tsx",
+      "parent": "/organization"
     }
   }
 }
