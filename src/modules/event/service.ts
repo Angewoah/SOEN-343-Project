@@ -4,8 +4,9 @@ import { getSupabaseClient } from "../../supabase/client"
 
 const supabase = getSupabaseClient();
 
-// Example usage
-export async function fetchEvents() {
+// Example usage for funsies !
+export async function fetchEvents () {
+try{ 
   const { data, error } = await supabase
     .from('events')
     .select('*');
@@ -13,4 +14,7 @@ export async function fetchEvents() {
   
   if (error) throw error
   return data
+} catch (err) {
+    console.error("Error fetching events", err);
+}
 }
