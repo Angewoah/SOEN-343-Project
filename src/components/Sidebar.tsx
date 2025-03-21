@@ -7,14 +7,24 @@ import {
   useNavigate,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
+import { getSupabaseClient } from "../supabase/client";
 
 export const Route = createRootRoute({
   component: Sidebar,
 });
 
 export function Sidebar() {
+  const supabase = getSupabaseClient();
+
+  const navigate = useNavigate();
+
   const logout = async () => {
-    // log user out and return to home page
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error("Unable to sign out", error);
+    } else {
+      navigate({ to: "/" });
+    }
   };
   return (
     <>

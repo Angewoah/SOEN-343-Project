@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { Sidebar } from "../../components/Sidebar";
 import { OrgNavbar } from "../../components/OrgNavbar";
+import { supabase } from "../../supabase/client";
 
 export const Route = createFileRoute("/organization")({
   component: RouteComponent,
@@ -16,8 +17,4 @@ function RouteComponent() {
       </div>
     </div>
   );
-}
-
-{
-  /*  */
 }

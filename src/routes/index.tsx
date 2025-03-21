@@ -7,8 +7,9 @@ export const Route = createFileRoute("/")({
 
 function HomeComponent() {
   return (
-    <div className="p-2">
+    <div className="flex gap-x-8">
       <Link to="/organization/dashboard">Go to organization</Link>
+      <Link to="/login">Go to login</Link>
     </div>
   );
 }
