@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
 import { getSupabaseClient } from "../supabase/client";
 import { User } from "@supabase/supabase-js";
-import { useUser } from "../hooks/userUser";
+import { useUser } from "../hooks/useUser";
 
 export const Route = createFileRoute("/")({
   component: HomeComponent,

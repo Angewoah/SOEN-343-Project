@@ -1,6 +1,6 @@
 import { createFileRoute, useRouteContext } from "@tanstack/react-router";
 import { getSupabaseClient } from "../../supabase/client";
-import { useUser } from "../../hooks/userUser";
+import { useUser } from "../../hooks/useUser";
 
 export const Route = createFileRoute("/organization/dashboard")({
   component: RouteComponent,

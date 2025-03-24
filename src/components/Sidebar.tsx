@@ -8,6 +8,7 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { getSupabaseClient } from "../supabase/client";
+import { useUser } from "../hooks/useUser";
 
 export const Route = createRootRoute({
   component: Sidebar,
