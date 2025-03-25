@@ -5,15 +5,21 @@ import { format } from "date-fns";
 import { CalendarIcon, MapPinIcon, ClockIcon, UserGroupIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
 import { Database } from "../../supabase/types";
 
-
 export const Route = createFileRoute("/client/events")({
   component: ClientEventsComponent,
 });
 
-type Event = Database["public"]["Tables"]["events"]["Row"];
+type EventType = Database["public"]["Tables"]["events"]["Row"];
+type VenueType = Database["public"]["Tables"]["venues"]["Row"];
+type TimeslotType = Database["public"]["Tables"]["venue_timeslots"]["Row"];
+
+type EventWithDetails = EventType & {
+  venue?: VenueType | null;
+  timeslot?: TimeslotType | null;
+};
 
 function ClientEventsComponent() {
-  const [events, setEvents] = useState<Event[]>([]);
+  const [events, setEvents] = useState<EventWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -68,7 +74,9 @@ function ClientEventsComponent() {
               <div className="mt-4 space-y-2">
                 <div className="flex items-center text-sm text-gray-600">
                   <CalendarIcon className="w-4 h-4 mr-2 text-blue-500" />
-                  {event.timeslot ? formatDate(event.timeslot.start_time) : "Not scheduled"}
+                  {event.timeslot && event.timeslot.start_time 
+                    ? formatDate(event.timeslot.start_time) 
+                    : "Not scheduled"}
                 </div>
                 
                 <div className="flex items-center text-sm text-gray-600">
@@ -90,7 +98,7 @@ function ClientEventsComponent() {
               <div className="mt-4 pt-3 border-t border-gray-100 flex space-x-2">
                 <Link 
                   to="/client/events/$eventId"
-                  params={{ eventId: event.id }}
+                  params={{ eventId: event.id.toString() }}
                   className="flex-1 flex justify-center items-center bg-gray-100 text-blue-600 py-2 rounded hover:bg-gray-200 transition-colors"
                 >
                   <span>View Details</span>
