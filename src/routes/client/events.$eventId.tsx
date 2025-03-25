@@ -3,34 +3,24 @@ import { useEffect, useState } from "react";
 import { fetchEventById } from "../../modules/event/service";
 import { format } from "date-fns";
 import { CalendarIcon, MapPinIcon, ClockIcon, UserGroupIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { Database } from "../../supabase/types";
 
 export const Route = createFileRoute("/client/events/$eventId")({
   component: EventDetailsComponent,
 });
 
-type Event = {
-  id: string;
-  title: string;
-  description: string;
-  duration_minutes: number;
-  max_attendees: number;
-  created_at: string;
-  venue: {
-    id: number;
-    name: string;
-    address: string;
-    capacity: number;
-  } | null;
-  timeslot: {
-    id: number;
-    start_time: string;
-    end_time: string;
-  } | null;
+type EventType = Database["public"]["Tables"]["events"]["Row"];
+type VenueType = Database["public"]["Tables"]["venues"]["Row"];
+type TimeslotType = Database["public"]["Tables"]["venue_timeslots"]["Row"];
+
+type EventWithDetails = EventType & {
+  venue?: VenueType | null;
+  timeslot?: TimeslotType | null;
 };
 
 function EventDetailsComponent() {
   const { eventId } = useParams({ from: "/client/events/$eventId" });
-  const [event, setEvent] = useState<Event | null>(null);
+  const [event, setEvent] = useState<EventWithDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -158,7 +148,7 @@ function EventDetailsComponent() {
                   <CalendarIcon className="w-5 h-5 mr-3 text-blue-500 mt-0.5" />
                   <div>
                     <p className="font-medium">When</p>
-                    <p>{event.timeslot ? formatDate(event.timeslot.start_time) : "Not scheduled"}</p>
+                    <p>{event.timeslot ? formatDate(event.timeslot.start_time ?? undefined) : "Not scheduled"}</p>
                   </div>
                 </div>
                 

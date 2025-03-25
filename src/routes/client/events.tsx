@@ -3,30 +3,14 @@ import { useEffect, useState } from "react";
 import { fetchAllEventsWithDetails } from "../../modules/event/service";
 import { format } from "date-fns";
 import { CalendarIcon, MapPinIcon, ClockIcon, UserGroupIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
+import { Database } from "../../supabase/types";
+
 
 export const Route = createFileRoute("/client/events")({
   component: ClientEventsComponent,
 });
 
-type Event = {
-  id: string;
-  title: string;
-  description: string;
-  duration_minutes: number;
-  max_attendees: number;
-  created_at: string;
-  venue: {
-    id: number;
-    name: string;
-    address: string;
-    capacity: number;
-  } | null;
-  timeslot: {
-    id: number;
-    start_time: string;
-    end_time: string;
-  } | null;
-};
+type Event = Database["public"]["Tables"]["events"]["Row"];
 
 function ClientEventsComponent() {
   const [events, setEvents] = useState<Event[]>([]);
