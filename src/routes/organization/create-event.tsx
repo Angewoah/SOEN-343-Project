@@ -13,6 +13,12 @@ import { User } from "@supabase/supabase-js";
 import { getSupabaseClient } from "../../supabase/client";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
+type Venue = {
+  id: number;
+  name: string | null;
+  capacity: number | null;
+  address: string | null;
+};
 
 const CreateEventSchema = z.object({
   title: z.string().min(3, { message: "Title must be at least 3 characters" }),
@@ -27,6 +33,8 @@ const CreateEventSchema = z.object({
     .number()
     .int()
     .positive({ message: "Max attendees must be a positive number" }),
+  venueId: z.string().min(1, { message: "Please select a venue" }),
+  eventDateTime: z.string().min(1, { message: "Please select a date and time" }),
 });
 
 type CreateEventFormData = z.infer<typeof CreateEventSchema>;
@@ -39,7 +47,27 @@ function CreateEventsPage() {
   const { user, isLoading, signOut } = useUser();
   const supabase = getSupabaseClient();
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [venues, setVenues] = useState<Venue[]>([]);
   const navigate = useNavigate();
+
+  // Fetch venues from the database
+  useEffect(() => {
+    async function fetchVenues() {
+      try {
+        const { data, error } = await supabase
+          .from('venues')
+          .select('*')
+          .order('name');
+          
+        if (error) throw error;
+        setVenues(data || []);
+      } catch (err) {
+        console.error("Error fetching venues", err);
+      }
+    }
+    
+    fetchVenues();
+  }, []);
 
   useEffect(() => {
     async function fetchProfile() {
@@ -72,9 +100,12 @@ function CreateEventsPage() {
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
   } = useForm<CreateEventFormData>({
     resolver: zodResolver(CreateEventSchema),
   });
+
+  const maxAttendees = watch("maxAttendees");
 
   const onSubmit = (data: CreateEventFormData) => {
     if (!user) return;
@@ -84,7 +115,9 @@ function CreateEventsPage() {
         data.title,
         data.description,
         data.duration,
-        data.maxAttendees
+        data.maxAttendees,
+        data.venueId,
+        new Date(data.eventDateTime)
       );
 
       reset();
@@ -94,6 +127,7 @@ function CreateEventsPage() {
       console.error("Failed to create event", error);
     }
   };
+  
   return (
     <div className="w-full flex flex-col items-center">
       <div className="h-20 w-full flex bg-white items-center rounded-t-4xl border-b-1 border-b-neutral-200">
@@ -196,6 +230,63 @@ function CreateEventsPage() {
                 )}
               </div>
             </div>
+
+            <div>
+              <label
+                htmlFor="venueId"
+                className="block text-2xl font-bold text-gray-700"
+              >
+                Venue
+              </label>
+              <select
+                id="venueId"
+                {...register("venueId")}
+                className="mt-2 p-1 block w-full rounded-md border border-neutral-300 shadow-sm focus:outline-blue-300"
+              >
+                <option value="">Select a venue</option>
+                {venues.map((venue) => (
+                  <option 
+                    key={venue.id} 
+                    value={venue.id}
+                    disabled={venue.capacity !== null && maxAttendees > venue.capacity}
+                    className={venue.capacity !== null && maxAttendees > venue.capacity ? "text-gray-400" : ""}
+                  >
+                    {venue.name} (Capacity: {venue.capacity})
+                  </option>
+                ))}
+              </select>
+              {errors.venueId && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.venueId.message}
+                </p>
+              )}
+              {maxAttendees > 0 && (
+                <p className="mt-1 text-xs text-gray-500">
+                  Venues with capacity less than {maxAttendees} attendees are disabled
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label
+                htmlFor="eventDateTime"
+                className="block text-2xl font-bold text-gray-700"
+              >
+                Date and Time
+              </label>
+              <input
+                id="eventDateTime"
+                type="datetime-local"
+                {...register("eventDateTime")}
+                className="mt-2 p-1 block w-full rounded-md border border-neutral-300 shadow-sm focus:outline-blue-300"
+              />
+              {errors.eventDateTime && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.eventDateTime.message}
+                </p>
+              )}
+            </div>
+            
             <div>
               <button
                 type="submit"
