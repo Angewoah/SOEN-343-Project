@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Sidebar } from "../../components/Sidebar";
 
 export const Route = createFileRoute("/organization/network")({
   component: RouteComponent,
@@ -6,8 +7,11 @@ export const Route = createFileRoute("/organization/network")({
 
 function RouteComponent() {
   return (
-    <div className="w-full flex flex-col px-72 py-4">
-      <h1 className="text-4xl ">Network</h1>
-    </div>
+    <>
+      <Sidebar />
+      <div className="w-full flex flex-col px-72 py-4">
+        <h1 className="text-4xl ">Network</h1>
+      </div>
+    </>
   );
 }

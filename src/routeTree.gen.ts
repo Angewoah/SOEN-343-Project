@@ -20,6 +20,7 @@ import { Route as OrganizationMarketingImport } from './routes/organization/mark
 import { Route as OrganizationInsightsImport } from './routes/organization/insights'
 import { Route as OrganizationEventsImport } from './routes/organization/events'
 import { Route as OrganizationDashboardImport } from './routes/organization/dashboard'
+import { Route as OrganizationCreateEventImport } from './routes/organization/create-event'
 import { Route as authRegisterImport } from './routes/(auth)/register'
 import { Route as authLoginImport } from './routes/(auth)/login'
 
@@ -79,6 +80,12 @@ const OrganizationDashboardRoute = OrganizationDashboardImport.update({
   getParentRoute: () => OrganizationRouteRoute,
 } as any)
 
+const OrganizationCreateEventRoute = OrganizationCreateEventImport.update({
+  id: '/create-event',
+  path: '/create-event',
+  getParentRoute: () => OrganizationRouteRoute,
+} as any)
+
 const authRegisterRoute = authRegisterImport.update({
   id: '/(auth)/register',
   path: '/register',
@@ -122,6 +129,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/register'
       preLoaderRoute: typeof authRegisterImport
       parentRoute: typeof rootRoute
+    }
+    '/organization/create-event': {
+      id: '/organization/create-event'
+      path: '/create-event'
+      fullPath: '/organization/create-event'
+      preLoaderRoute: typeof OrganizationCreateEventImport
+      parentRoute: typeof OrganizationRouteImport
     }
     '/organization/dashboard': {
       id: '/organization/dashboard'
@@ -178,6 +192,7 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface OrganizationRouteRouteChildren {
+  OrganizationCreateEventRoute: typeof OrganizationCreateEventRoute
   OrganizationDashboardRoute: typeof OrganizationDashboardRoute
   OrganizationEventsRoute: typeof OrganizationEventsRoute
   OrganizationInsightsRoute: typeof OrganizationInsightsRoute
@@ -188,6 +203,7 @@ interface OrganizationRouteRouteChildren {
 }
 
 const OrganizationRouteRouteChildren: OrganizationRouteRouteChildren = {
+  OrganizationCreateEventRoute: OrganizationCreateEventRoute,
   OrganizationDashboardRoute: OrganizationDashboardRoute,
   OrganizationEventsRoute: OrganizationEventsRoute,
   OrganizationInsightsRoute: OrganizationInsightsRoute,
@@ -205,6 +221,7 @@ export interface FileRoutesByFullPath {
   '/organization': typeof OrganizationRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
+  '/organization/create-event': typeof OrganizationCreateEventRoute
   '/organization/dashboard': typeof OrganizationDashboardRoute
   '/organization/events': typeof OrganizationEventsRoute
   '/organization/insights': typeof OrganizationInsightsRoute
@@ -219,6 +236,7 @@ export interface FileRoutesByTo {
   '/organization': typeof OrganizationRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
+  '/organization/create-event': typeof OrganizationCreateEventRoute
   '/organization/dashboard': typeof OrganizationDashboardRoute
   '/organization/events': typeof OrganizationEventsRoute
   '/organization/insights': typeof OrganizationInsightsRoute
@@ -234,6 +252,7 @@ export interface FileRoutesById {
   '/organization': typeof OrganizationRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/register': typeof authRegisterRoute
+  '/organization/create-event': typeof OrganizationCreateEventRoute
   '/organization/dashboard': typeof OrganizationDashboardRoute
   '/organization/events': typeof OrganizationEventsRoute
   '/organization/insights': typeof OrganizationInsightsRoute
@@ -250,6 +269,7 @@ export interface FileRouteTypes {
     | '/organization'
     | '/login'
     | '/register'
+    | '/organization/create-event'
     | '/organization/dashboard'
     | '/organization/events'
     | '/organization/insights'
@@ -263,6 +283,7 @@ export interface FileRouteTypes {
     | '/organization'
     | '/login'
     | '/register'
+    | '/organization/create-event'
     | '/organization/dashboard'
     | '/organization/events'
     | '/organization/insights'
@@ -276,6 +297,7 @@ export interface FileRouteTypes {
     | '/organization'
     | '/(auth)/login'
     | '/(auth)/register'
+    | '/organization/create-event'
     | '/organization/dashboard'
     | '/organization/events'
     | '/organization/insights'
@@ -322,6 +344,7 @@ export const routeTree = rootRoute
     "/organization": {
       "filePath": "organization/route.tsx",
       "children": [
+        "/organization/create-event",
         "/organization/dashboard",
         "/organization/events",
         "/organization/insights",
@@ -336,6 +359,10 @@ export const routeTree = rootRoute
     },
     "/(auth)/register": {
       "filePath": "(auth)/register.tsx"
+    },
+    "/organization/create-event": {
+      "filePath": "organization/create-event.tsx",
+      "parent": "/organization"
     },
     "/organization/dashboard": {
       "filePath": "organization/dashboard.tsx",

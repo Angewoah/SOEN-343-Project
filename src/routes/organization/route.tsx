@@ -12,7 +12,6 @@ function RouteComponent() {
     <div className="flex flex-col h-screen bg-gradient-to-tl from-purple-600 via-purple-400 to-purple-400/10">
       <OrgNavbar />
       <div className="flex flex-1 rounded-t-4xl shadow-2xl shadow-black bg-white">
-        <Sidebar />
         <Outlet />
       </div>
     </div>

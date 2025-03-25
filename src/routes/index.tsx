@@ -9,22 +9,9 @@ export const Route = createFileRoute("/")({
 });
 
 function HomeComponent() {
-  // const [user, setUser] = useState<User | null>(null);
-
   const { user, isLoading, signOut } = useUser();
 
   const supabase = getSupabaseClient();
-
-  // useEffect(() => {
-  //   const fetchUser = async () => {
-  //     const {
-  //       data: { user },
-  //     } = await supabase.auth.getUser();
-  //     setUser(user);
-  //   };
-
-  //   fetchUser();
-  // });
 
   return (
     <div className="flex gap-x-8">
