@@ -25,6 +25,7 @@ import { Route as OrganizationCreateEventImport } from './routes/organization/cr
 import { Route as ClientEventsImport } from './routes/client/events'
 import { Route as authRegisterImport } from './routes/(auth)/register'
 import { Route as authLoginImport } from './routes/(auth)/login'
+import { Route as ClientEventsEventIdImport } from './routes/client/events.$eventId'
 
 // Create/Update Routes
 
@@ -110,6 +111,12 @@ const authLoginRoute = authLoginImport.update({
   id: '/(auth)/login',
   path: '/login',
   getParentRoute: () => rootRoute,
+} as any)
+
+const ClientEventsEventIdRoute = ClientEventsEventIdImport.update({
+  id: '/$eventId',
+  path: '/$eventId',
+  getParentRoute: () => ClientEventsRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -214,17 +221,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrganizationSettingsImport
       parentRoute: typeof OrganizationRouteImport
     }
+    '/client/events/$eventId': {
+      id: '/client/events/$eventId'
+      path: '/$eventId'
+      fullPath: '/client/events/$eventId'
+      preLoaderRoute: typeof ClientEventsEventIdImport
+      parentRoute: typeof ClientEventsImport
+    }
   }
 }
 
 // Create and export the route tree
 
+interface ClientEventsRouteChildren {
+  ClientEventsEventIdRoute: typeof ClientEventsEventIdRoute
+}
+
+const ClientEventsRouteChildren: ClientEventsRouteChildren = {
+  ClientEventsEventIdRoute: ClientEventsEventIdRoute,
+}
+
+const ClientEventsRouteWithChildren = ClientEventsRoute._addFileChildren(
+  ClientEventsRouteChildren,
+)
+
 interface ClientRouteRouteChildren {
-  ClientEventsRoute: typeof ClientEventsRoute
+  ClientEventsRoute: typeof ClientEventsRouteWithChildren
 }
 
 const ClientRouteRouteChildren: ClientRouteRouteChildren = {
-  ClientEventsRoute: ClientEventsRoute,
+  ClientEventsRoute: ClientEventsRouteWithChildren,
 }
 
 const ClientRouteRouteWithChildren = ClientRouteRoute._addFileChildren(
@@ -262,7 +288,7 @@ export interface FileRoutesByFullPath {
   '/organization': typeof OrganizationRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
-  '/client/events': typeof ClientEventsRoute
+  '/client/events': typeof ClientEventsRouteWithChildren
   '/organization/create-event': typeof OrganizationCreateEventRoute
   '/organization/dashboard': typeof OrganizationDashboardRoute
   '/organization/events': typeof OrganizationEventsRoute
@@ -271,6 +297,7 @@ export interface FileRoutesByFullPath {
   '/organization/network': typeof OrganizationNetworkRoute
   '/organization/payment': typeof OrganizationPaymentRoute
   '/organization/settings': typeof OrganizationSettingsRoute
+  '/client/events/$eventId': typeof ClientEventsEventIdRoute
 }
 
 export interface FileRoutesByTo {
@@ -279,7 +306,7 @@ export interface FileRoutesByTo {
   '/organization': typeof OrganizationRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
-  '/client/events': typeof ClientEventsRoute
+  '/client/events': typeof ClientEventsRouteWithChildren
   '/organization/create-event': typeof OrganizationCreateEventRoute
   '/organization/dashboard': typeof OrganizationDashboardRoute
   '/organization/events': typeof OrganizationEventsRoute
@@ -288,6 +315,7 @@ export interface FileRoutesByTo {
   '/organization/network': typeof OrganizationNetworkRoute
   '/organization/payment': typeof OrganizationPaymentRoute
   '/organization/settings': typeof OrganizationSettingsRoute
+  '/client/events/$eventId': typeof ClientEventsEventIdRoute
 }
 
 export interface FileRoutesById {
@@ -297,7 +325,7 @@ export interface FileRoutesById {
   '/organization': typeof OrganizationRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/register': typeof authRegisterRoute
-  '/client/events': typeof ClientEventsRoute
+  '/client/events': typeof ClientEventsRouteWithChildren
   '/organization/create-event': typeof OrganizationCreateEventRoute
   '/organization/dashboard': typeof OrganizationDashboardRoute
   '/organization/events': typeof OrganizationEventsRoute
@@ -306,6 +334,7 @@ export interface FileRoutesById {
   '/organization/network': typeof OrganizationNetworkRoute
   '/organization/payment': typeof OrganizationPaymentRoute
   '/organization/settings': typeof OrganizationSettingsRoute
+  '/client/events/$eventId': typeof ClientEventsEventIdRoute
 }
 
 export interface FileRouteTypes {
@@ -325,6 +354,7 @@ export interface FileRouteTypes {
     | '/organization/network'
     | '/organization/payment'
     | '/organization/settings'
+    | '/client/events/$eventId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -341,6 +371,7 @@ export interface FileRouteTypes {
     | '/organization/network'
     | '/organization/payment'
     | '/organization/settings'
+    | '/client/events/$eventId'
   id:
     | '__root__'
     | '/'
@@ -357,6 +388,7 @@ export interface FileRouteTypes {
     | '/organization/network'
     | '/organization/payment'
     | '/organization/settings'
+    | '/client/events/$eventId'
   fileRoutesById: FileRoutesById
 }
 
@@ -423,7 +455,10 @@ export const routeTree = rootRoute
     },
     "/client/events": {
       "filePath": "client/events.tsx",
-      "parent": "/client"
+      "parent": "/client",
+      "children": [
+        "/client/events/$eventId"
+      ]
     },
     "/organization/create-event": {
       "filePath": "organization/create-event.tsx",
@@ -456,6 +491,10 @@ export const routeTree = rootRoute
     "/organization/settings": {
       "filePath": "organization/settings.tsx",
       "parent": "/organization"
+    },
+    "/client/events/$eventId": {
+      "filePath": "client/events.$eventId.tsx",
+      "parent": "/client/events"
     }
   }
 }

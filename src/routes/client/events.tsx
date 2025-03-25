@@ -1,6 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { fetchAllEvents } from "../../modules/event/service";
+import { fetchAllEventsWithDetails } from "../../modules/event/service";
+import { format } from "date-fns";
+import { CalendarIcon, MapPinIcon, ClockIcon, UserGroupIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
 
 export const Route = createFileRoute("/client/events")({
   component: ClientEventsComponent,
@@ -13,6 +15,17 @@ type Event = {
   duration_minutes: number;
   max_attendees: number;
   created_at: string;
+  venue: {
+    id: number;
+    name: string;
+    address: string;
+    capacity: number;
+  } | null;
+  timeslot: {
+    id: number;
+    start_time: string;
+    end_time: string;
+  } | null;
 };
 
 function ClientEventsComponent() {
@@ -23,7 +36,7 @@ function ClientEventsComponent() {
     async function loadEvents() {
       try {
         setLoading(true);
-        const data = await fetchAllEvents();
+        const data = await fetchAllEventsWithDetails();
         setEvents(data || []);
       } catch (error) {
         console.error("Failed to load events:", error);
@@ -35,8 +48,22 @@ function ClientEventsComponent() {
     loadEvents();
   }, []);
 
+  // Format date function
+  const formatDate = (dateStr?: string) => {
+    if (!dateStr) return "Not scheduled";
+    
+    try {
+      return format(new Date(dateStr), "MMM d, yyyy 'at' h:mm a");
+    } catch (e) {
+      return "Invalid date";
+    }
+  };
+
   return (
     <div className="client-events">
+      {/* This Outlet will render child routes like $eventId */}
+      <Outlet />
+      
       <h1 className="text-2xl font-bold mb-6">Available Events</h1>
       
       {loading ? (
@@ -50,12 +77,43 @@ function ClientEventsComponent() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {events.map((event) => (
-            <div key={event.id} className="bg-white p-4 rounded-lg shadow-md">
+            <div key={event.id} className="bg-white p-5 rounded-lg shadow-md hover:shadow-lg transition-shadow">
               <h2 className="text-lg font-semibold">{event.title}</h2>
-              <p className="text-gray-600 mt-2">{event.description}</p>
-              <div className="mt-4 flex justify-between items-center">
-                <span className="text-sm text-gray-500">{event.duration_minutes} minutes</span>
-                <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+              <p className="text-gray-600 mt-2 line-clamp-2">{event.description}</p>
+              
+              <div className="mt-4 space-y-2">
+                <div className="flex items-center text-sm text-gray-600">
+                  <CalendarIcon className="w-4 h-4 mr-2 text-blue-500" />
+                  {event.timeslot ? formatDate(event.timeslot.start_time) : "Not scheduled"}
+                </div>
+                
+                <div className="flex items-center text-sm text-gray-600">
+                  <MapPinIcon className="w-4 h-4 mr-2 text-blue-500" />
+                  {event.venue ? event.venue.name : "No venue specified"}
+                </div>
+                
+                <div className="flex items-center text-sm text-gray-600">
+                  <ClockIcon className="w-4 h-4 mr-2 text-blue-500" />
+                  {event.duration_minutes} minutes
+                </div>
+                
+                <div className="flex items-center text-sm text-gray-600">
+                  <UserGroupIcon className="w-4 h-4 mr-2 text-blue-500" />
+                  Max: {event.max_attendees} attendees
+                </div>
+              </div>
+              
+              <div className="mt-4 pt-3 border-t border-gray-100 flex space-x-2">
+                <Link 
+                  to="/client/events/$eventId"
+                  params={{ eventId: event.id }}
+                  className="flex-1 flex justify-center items-center bg-gray-100 text-blue-600 py-2 rounded hover:bg-gray-200 transition-colors"
+                >
+                  <span>View Details</span>
+                  <ArrowRightIcon className="w-4 h-4 ml-1" />
+                </Link>
+                
+                <button className="flex-1 bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition-colors">
                   Book Now
                 </button>
               </div>
