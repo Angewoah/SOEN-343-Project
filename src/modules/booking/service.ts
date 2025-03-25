@@ -32,3 +32,36 @@ export async function fetchUserBookings(userId: string) {
     return [];
   }
 }
+
+type BookingData = {
+  user_id: string;
+  event_id: number;
+  status: string;
+};
+
+export async function createBooking(bookingData: BookingData) {
+  try {
+    const supabase = getSupabaseClient();
+    
+    const { data, error } = await supabase
+      .from('bookings')
+      .insert([
+        {
+          user_id: bookingData.user_id,
+          event_id: bookingData.event_id,
+          registration_status: bookingData.status,
+        }
+      ])
+      .select();
+    
+    if (error) {
+      console.error('Error creating booking:', error);
+      throw error;
+    }
+    
+    return data?.[0] || null;
+  } catch (err) {
+    console.error('Error in createBooking:', err);
+    throw err;
+  }
+}

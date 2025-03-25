@@ -23,7 +23,6 @@ type TimeslotType = Database["public"]["Tables"]["venue_timeslots"]["Row"];
 type BookingType = Database["public"]["Tables"]["bookings"]["Row"];
 
 type BookingWithDetails = BookingType & {
-  status: BookingStatus; 
   event?: EventType & {
     venue?: VenueType | null;
     timeslot?: TimeslotType | null;
@@ -54,6 +53,7 @@ function BookingsComponent() {
         }
         
         const data = await fetchUserBookings(userData.user.id);
+        console.log("Fetched bookings:", data); // Debug log to see what's coming back
         setBookings(data || []);
       } catch (err) {
         console.error("Failed to load bookings:", err);
@@ -76,14 +76,26 @@ function BookingsComponent() {
     }
   };
 
+  // Helper function to get booking status regardless of field name
+  const getBookingStatus = (booking: BookingWithDetails): string => {
+    // Try all possible field names for status
+    return booking.registration_status || 
+           'pending' || // Default to pending if no status found
+           'pending'; // Default to pending if no status found
+  };
+
   const filteredBookings = bookings.filter(booking => {
     if (activeTab === 'all') return true;
-    return booking.status === activeTab;
+    return getBookingStatus(booking).toLowerCase() === activeTab;
   });
 
-  const StatusIndicator = ({ status }: { status: string }) => {
+  const StatusIndicator = ({ booking }: { booking: BookingWithDetails }) => {
+    const status = getBookingStatus(booking).toLowerCase();
+    
     switch (status) {
       case 'confirmed':
+      case 'accepted':
+      case 'approved':
         return (
           <div className="flex items-center text-green-500">
             <CheckCircleIcon className="w-5 h-5 mr-1" />
@@ -91,6 +103,8 @@ function BookingsComponent() {
           </div>
         );
       case 'pending':
+      case 'awaiting':
+      case 'in review':
         return (
           <div className="flex items-center text-yellow-500">
             <PendingIcon className="w-5 h-5 mr-1" />
@@ -98,6 +112,8 @@ function BookingsComponent() {
           </div>
         );
       case 'declined':
+      case 'rejected':
+      case 'cancelled':
         return (
           <div className="flex items-center text-red-500">
             <XCircleIcon className="w-5 h-5 mr-1" />
@@ -173,7 +189,7 @@ function BookingsComponent() {
               : `You don't have any ${activeTab} bookings.`}
           </p>
           <button 
-            className="mt-4 bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors  hover:cursor-pointer"
+            className="mt-4 bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors hover:cursor-pointer"
             onClick={() => window.location.href = '/client/events'}
           >
             Browse Events
@@ -192,63 +208,67 @@ function BookingsComponent() {
               </tr>
             </thead>
             <tbody>
-              {filteredBookings.map((booking) => (
-                <tr key={booking.id} className="hover:bg-gray-50">
-                  <td className="p-4 border-b">
-                    <div>
-                      <p className="font-medium">{booking.event?.title || "Unnamed Event"}</p>
-                      <p className="text-sm text-gray-500 line-clamp-1">{booking.event?.description}</p>
-                    </div>
-                  </td>
-                  <td className="p-4 border-b">
-                    <div className="flex items-start">
-                      <MapPinIcon className="w-5 h-5 mr-2 text-gray-400 flex-shrink-0 mt-0.5" />
+              {filteredBookings.map((booking) => {
+                const status = getBookingStatus(booking).toLowerCase();
+                
+                return (
+                  <tr key={booking.id} className="hover:bg-gray-50">
+                    <td className="p-4 border-b">
                       <div>
-                        <p>{booking.event?.venue?.name || "No venue"}</p>
-                        <p className="text-sm text-gray-500">{booking.event?.venue?.address}</p>
+                        <p className="font-medium">{booking.event?.title || "Unnamed Event"}</p>
+                        <p className="text-sm text-gray-500 line-clamp-1">{booking.event?.description}</p>
                       </div>
-                    </div>
-                  </td>
-                  <td className="p-4 border-b">
-                    <div className="flex items-start">
-                      <CalendarIcon className="w-5 h-5 mr-2 text-gray-400 flex-shrink-0 mt-0.5" />
-                      <div>
-                        {booking.event?.timeslot ? (
-                          <p>{formatDate(booking.event.timeslot.start_time ?? undefined)}</p>
-                        ) : (
-                          <p className="text-gray-500">Not scheduled</p>
-                        )}
-                        <p className="text-sm text-gray-500">
-                          {booking.event?.duration_minutes} minutes
-                        </p>
+                    </td>
+                    <td className="p-4 border-b">
+                      <div className="flex items-start">
+                        <MapPinIcon className="w-5 h-5 mr-2 text-gray-400 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p>{booking.event?.venue?.name || "No venue"}</p>
+                          <p className="text-sm text-gray-500">{booking.event?.venue?.address}</p>
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="p-4 border-b">
-                    <StatusIndicator status={booking.status} />
-                  </td>
-                  <td className="p-4 border-b">
-                    {booking.status === 'confirmed' && (
-                      <button className="bg-red-100 text-red-700 px-4 py-1 rounded hover:bg-red-200 transition-colors">
-                        Cancel
-                      </button>
-                    )}
-                    {booking.status === 'pending' && (
-                      <div className="space-y-2">
-                        <p className="text-sm text-gray-500">Awaiting confirmation</p>
+                    </td>
+                    <td className="p-4 border-b">
+                      <div className="flex items-start">
+                        <CalendarIcon className="w-5 h-5 mr-2 text-gray-400 flex-shrink-0 mt-0.5" />
+                        <div>
+                          {booking.event?.timeslot ? (
+                            <p>{formatDate(booking.event.timeslot.start_time ?? undefined)}</p>
+                          ) : (
+                            <p className="text-gray-500">Not scheduled</p>
+                          )}
+                          <p className="text-sm text-gray-500">
+                            {booking.event?.duration_minutes} minutes
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="p-4 border-b">
+                      <StatusIndicator booking={booking} />
+                    </td>
+                    <td className="p-4 border-b">
+                      {status === 'confirmed' && (
                         <button className="bg-red-100 text-red-700 px-4 py-1 rounded hover:bg-red-200 transition-colors">
-                          Cancel Request
+                          Cancel
                         </button>
-                      </div>
-                    )}
-                    {booking.status === 'declined' && (
-                      <button className="bg-blue-100 text-blue-700 px-4 py-1 rounded hover:bg-blue-200 transition-colors">
-                        Book Similar
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
+                      )}
+                      {status === 'pending' && (
+                        <div className="space-y-2">
+                          <p className="text-sm text-gray-500">Awaiting confirmation</p>
+                          <button className="bg-red-100 text-red-700 px-4 py-1 rounded hover:bg-red-200 transition-colors">
+                            Cancel Request
+                          </button>
+                        </div>
+                      )}
+                      {status === 'declined' && (
+                        <button className="bg-blue-100 text-blue-700 px-4 py-1 rounded hover:bg-blue-200 transition-colors">
+                          Book Similar
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
