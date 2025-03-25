@@ -1,4 +1,4 @@
-import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useMatches } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { fetchAllEventsWithDetails } from "../../modules/event/service";
 import { format } from "date-fns";
@@ -21,6 +21,11 @@ type EventWithDetails = EventType & {
 function ClientEventsComponent() {
   const [events, setEvents] = useState<EventWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
+  // Check if we're on an event details page
+  const matches = useMatches();
+  const isEventDetailPage = matches.some(match => 
+    match.routeId === "/client/events/$eventId"
+  );
 
   useEffect(() => {
     async function loadEvents() {
@@ -49,11 +54,13 @@ function ClientEventsComponent() {
     }
   };
 
+  // If we're on an event detail page, only render the Outlet
+  if (isEventDetailPage) {
+    return <Outlet />;
+  }
+
   return (
     <div className="client-events">
-      {/* This Outlet will render child routes like $eventId */}
-      <Outlet />
-      
       <h1 className="text-2xl font-bold mb-6">Available Events</h1>
       
       {loading ? (
@@ -98,7 +105,7 @@ function ClientEventsComponent() {
               <div className="mt-4 pt-3 border-t border-gray-100 flex space-x-2">
                 <Link 
                   to="/client/events/$eventId"
-                  params={{ eventId: event.id.toString() }}
+                  params={{ eventId: String(event.id) }}
                   className="flex-1 flex justify-center items-center bg-gray-100 text-blue-600 py-2 rounded hover:bg-gray-200 transition-colors"
                 >
                   <span>View Details</span>

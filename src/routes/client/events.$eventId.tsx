@@ -71,7 +71,7 @@ function EventDetailsComponent() {
 
   if (loading) {
     return (
-      <div className="p-8 flex justify-center">
+      <div className="flex justify-center p-12">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
       </div>
     );
@@ -79,7 +79,7 @@ function EventDetailsComponent() {
 
   if (error || !event) {
     return (
-      <div className="p-8 flex flex-col items-center">
+      <div className="text-center py-12">
         <h2 className="text-xl font-semibold text-gray-700">
           {error || "Event not found"}
         </h2>
