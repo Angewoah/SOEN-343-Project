@@ -44,3 +44,20 @@ export async function createEvent(organizerId: string,title: string, description
 
   }
 }
+
+
+
+export async function fetchAllEvents() {
+  try {
+    const { data, error } = await supabase
+      .from('events')
+      .select('*')
+      .order('created_at', { ascending: false });
+      
+    if (error) throw error;
+    return data;
+  } catch (err) {
+    console.error("Error fetching all events", err);
+    return [];
+  }
+}

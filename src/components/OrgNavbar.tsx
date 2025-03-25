@@ -10,7 +10,7 @@ export function OrgNavbar() {
   return (
     <div className="flex justify-between items-center my-4 pr-4">
       <h1 className="font-mono text-2xl pl-6">stitch</h1>
-      <Link to="/" className="text-base font-mono">
+      <Link to="/client/" className="text-base font-mono">
         return to client page
       </Link>
     </div>
