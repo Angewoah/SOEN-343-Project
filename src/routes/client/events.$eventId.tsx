@@ -71,7 +71,7 @@ function EventDetailsComponent() {
 
   if (loading) {
     return (
-      <div className="fixed inset-0 bg-white bg-opacity-90 z-50 flex justify-center items-center">
+      <div className="p-8 flex justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
       </div>
     );
@@ -79,7 +79,7 @@ function EventDetailsComponent() {
 
   if (error || !event) {
     return (
-      <div className="fixed inset-0 bg-white bg-opacity-90 z-50 flex flex-col justify-center items-center">
+      <div className="p-8 flex flex-col items-center">
         <h2 className="text-xl font-semibold text-gray-700">
           {error || "Event not found"}
         </h2>
@@ -100,78 +100,69 @@ function EventDetailsComponent() {
   }
 
   return (
-    <div className="fixed inset-0 bg-white bg-opacity-90 z-50 overflow-y-auto">
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="flex justify-between items-center mb-6">
-          <Link 
-            to="/client/events"
-            className="inline-flex items-center text-blue-600 hover:text-blue-800"
-          >
-            <ArrowLeftIcon className="w-4 h-4 mr-1" />
-            Back to Events
-          </Link>
+    <div className="container mx-auto p-6">
+      <div className="mb-6">
+        <Link 
+          to="/client/events"
+          className="inline-flex items-center text-blue-600 hover:text-blue-800"
+        >
+          <ArrowLeftIcon className="w-4 h-4 mr-1" />
+          Back to Events
+        </Link>
+      </div>
+      
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h1 className="text-3xl font-bold text-gray-800">{event.title}</h1>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+          <div>
+            <h2 className="text-xl font-semibold mb-4">Event Details</h2>
+            <p className="text-gray-700 whitespace-pre-line">{event.description}</p>
+            
+            <div className="mt-6 space-y-3">
+              <div className="flex items-center">
+                <ClockIcon className="w-5 h-5 mr-3 text-blue-500" />
+                <span>Duration: {event.duration_minutes} minutes</span>
+              </div>
+              
+              <div className="flex items-center">
+                <UserGroupIcon className="w-5 h-5 mr-3 text-blue-500" />
+                <span>Maximum capacity: {event.max_attendees} attendees</span>
+              </div>
+            </div>
+          </div>
           
-          <button 
-            className="text-gray-600 hover:text-gray-800"
-            onClick={() => window.history.back()}
-          >
-            ✕
-          </button>
+          <div>
+            <h2 className="text-xl font-semibold mb-4">Time & Location</h2>
+            
+            <div className="space-y-3">
+              <div className="flex items-start">
+                <CalendarIcon className="w-5 h-5 mr-3 text-blue-500 mt-0.5" />
+                <div>
+                  <p className="font-medium">When</p>
+                  <p>{event.timeslot ? formatDate(event.timeslot.start_time ?? undefined) : "Not scheduled"}</p>
+                </div>
+              </div>
+              
+              {event.venue && (
+                <div className="flex items-start">
+                  <MapPinIcon className="w-5 h-5 mr-3 text-blue-500 mt-0.5" />
+                  <div>
+                    <p className="font-medium">Where</p>
+                    <p>{event.venue.name}</p>
+                    <p className="text-gray-600">{event.venue.address}</p>
+                    <p className="text-sm text-gray-500">Venue capacity: {event.venue.capacity}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
         
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h1 className="text-3xl font-bold text-gray-800">{event.title}</h1>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-            <div>
-              <h2 className="text-xl font-semibold mb-4">Event Details</h2>
-              <p className="text-gray-700 whitespace-pre-line">{event.description}</p>
-              
-              <div className="mt-6 space-y-3">
-                <div className="flex items-center">
-                  <ClockIcon className="w-5 h-5 mr-3 text-blue-500" />
-                  <span>Duration: {event.duration_minutes} minutes</span>
-                </div>
-                
-                <div className="flex items-center">
-                  <UserGroupIcon className="w-5 h-5 mr-3 text-blue-500" />
-                  <span>Maximum capacity: {event.max_attendees} attendees</span>
-                </div>
-              </div>
-            </div>
-            
-            <div>
-              <h2 className="text-xl font-semibold mb-4">Time & Location</h2>
-              
-              <div className="space-y-3">
-                <div className="flex items-start">
-                  <CalendarIcon className="w-5 h-5 mr-3 text-blue-500 mt-0.5" />
-                  <div>
-                    <p className="font-medium">When</p>
-                    <p>{event.timeslot ? formatDate(event.timeslot.start_time ?? undefined) : "Not scheduled"}</p>
-                  </div>
-                </div>
-                
-                {event.venue && (
-                  <div className="flex items-start">
-                    <MapPinIcon className="w-5 h-5 mr-3 text-blue-500 mt-0.5" />
-                    <div>
-                      <p className="font-medium">Where</p>
-                      <p>{event.venue.name}</p>
-                      <p className="text-gray-600">{event.venue.address}</p>
-                      <p className="text-sm text-gray-500">Venue capacity: {event.venue.capacity}</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-          
-          <div className="mt-8 pt-6 border-t border-gray-200">
-            <button className="w-full md:w-auto bg-blue-500 text-white py-3 px-6 rounded-lg hover:bg-blue-600 transition-colors">
-              Book This Event
-            </button>
-          </div>
+        <div className="mt-8 pt-6 border-t border-gray-200">
+          <button className="w-full md:w-auto bg-blue-500 text-white py-3 px-6 rounded-lg hover:bg-blue-600 transition-colors">
+            Book This Event
+          </button>
         </div>
       </div>
     </div>
