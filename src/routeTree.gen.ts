@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as OrganizationRouteImport } from './routes/organization/route'
+import { Route as ClientRouteImport } from './routes/client/route'
 import { Route as IndexImport } from './routes/index'
 import { Route as OrganizationSettingsImport } from './routes/organization/settings'
 import { Route as OrganizationPaymentImport } from './routes/organization/payment'
@@ -21,6 +22,7 @@ import { Route as OrganizationInsightsImport } from './routes/organization/insig
 import { Route as OrganizationEventsImport } from './routes/organization/events'
 import { Route as OrganizationDashboardImport } from './routes/organization/dashboard'
 import { Route as OrganizationCreateEventImport } from './routes/organization/create-event'
+import { Route as ClientEventsImport } from './routes/client/events'
 import { Route as authRegisterImport } from './routes/(auth)/register'
 import { Route as authLoginImport } from './routes/(auth)/login'
 
@@ -29,6 +31,12 @@ import { Route as authLoginImport } from './routes/(auth)/login'
 const OrganizationRouteRoute = OrganizationRouteImport.update({
   id: '/organization',
   path: '/organization',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ClientRouteRoute = ClientRouteImport.update({
+  id: '/client',
+  path: '/client',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -86,6 +94,12 @@ const OrganizationCreateEventRoute = OrganizationCreateEventImport.update({
   getParentRoute: () => OrganizationRouteRoute,
 } as any)
 
+const ClientEventsRoute = ClientEventsImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => ClientRouteRoute,
+} as any)
+
 const authRegisterRoute = authRegisterImport.update({
   id: '/(auth)/register',
   path: '/register',
@@ -109,6 +123,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/client': {
+      id: '/client'
+      path: '/client'
+      fullPath: '/client'
+      preLoaderRoute: typeof ClientRouteImport
+      parentRoute: typeof rootRoute
+    }
     '/organization': {
       id: '/organization'
       path: '/organization'
@@ -129,6 +150,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/register'
       preLoaderRoute: typeof authRegisterImport
       parentRoute: typeof rootRoute
+    }
+    '/client/events': {
+      id: '/client/events'
+      path: '/events'
+      fullPath: '/client/events'
+      preLoaderRoute: typeof ClientEventsImport
+      parentRoute: typeof ClientRouteImport
     }
     '/organization/create-event': {
       id: '/organization/create-event'
@@ -191,6 +219,18 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
+interface ClientRouteRouteChildren {
+  ClientEventsRoute: typeof ClientEventsRoute
+}
+
+const ClientRouteRouteChildren: ClientRouteRouteChildren = {
+  ClientEventsRoute: ClientEventsRoute,
+}
+
+const ClientRouteRouteWithChildren = ClientRouteRoute._addFileChildren(
+  ClientRouteRouteChildren,
+)
+
 interface OrganizationRouteRouteChildren {
   OrganizationCreateEventRoute: typeof OrganizationCreateEventRoute
   OrganizationDashboardRoute: typeof OrganizationDashboardRoute
@@ -218,9 +258,11 @@ const OrganizationRouteRouteWithChildren =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/client': typeof ClientRouteRouteWithChildren
   '/organization': typeof OrganizationRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
+  '/client/events': typeof ClientEventsRoute
   '/organization/create-event': typeof OrganizationCreateEventRoute
   '/organization/dashboard': typeof OrganizationDashboardRoute
   '/organization/events': typeof OrganizationEventsRoute
@@ -233,9 +275,11 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/client': typeof ClientRouteRouteWithChildren
   '/organization': typeof OrganizationRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
+  '/client/events': typeof ClientEventsRoute
   '/organization/create-event': typeof OrganizationCreateEventRoute
   '/organization/dashboard': typeof OrganizationDashboardRoute
   '/organization/events': typeof OrganizationEventsRoute
@@ -249,9 +293,11 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/client': typeof ClientRouteRouteWithChildren
   '/organization': typeof OrganizationRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/register': typeof authRegisterRoute
+  '/client/events': typeof ClientEventsRoute
   '/organization/create-event': typeof OrganizationCreateEventRoute
   '/organization/dashboard': typeof OrganizationDashboardRoute
   '/organization/events': typeof OrganizationEventsRoute
@@ -266,9 +312,11 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/client'
     | '/organization'
     | '/login'
     | '/register'
+    | '/client/events'
     | '/organization/create-event'
     | '/organization/dashboard'
     | '/organization/events'
@@ -280,9 +328,11 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/client'
     | '/organization'
     | '/login'
     | '/register'
+    | '/client/events'
     | '/organization/create-event'
     | '/organization/dashboard'
     | '/organization/events'
@@ -294,9 +344,11 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/client'
     | '/organization'
     | '/(auth)/login'
     | '/(auth)/register'
+    | '/client/events'
     | '/organization/create-event'
     | '/organization/dashboard'
     | '/organization/events'
@@ -310,6 +362,7 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ClientRouteRoute: typeof ClientRouteRouteWithChildren
   OrganizationRouteRoute: typeof OrganizationRouteRouteWithChildren
   authLoginRoute: typeof authLoginRoute
   authRegisterRoute: typeof authRegisterRoute
@@ -317,6 +370,7 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ClientRouteRoute: ClientRouteRouteWithChildren,
   OrganizationRouteRoute: OrganizationRouteRouteWithChildren,
   authLoginRoute: authLoginRoute,
   authRegisterRoute: authRegisterRoute,
@@ -333,6 +387,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/client",
         "/organization",
         "/(auth)/login",
         "/(auth)/register"
@@ -340,6 +395,12 @@ export const routeTree = rootRoute
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/client": {
+      "filePath": "client/route.tsx",
+      "children": [
+        "/client/events"
+      ]
     },
     "/organization": {
       "filePath": "organization/route.tsx",
@@ -359,6 +420,10 @@ export const routeTree = rootRoute
     },
     "/(auth)/register": {
       "filePath": "(auth)/register.tsx"
+    },
+    "/client/events": {
+      "filePath": "client/events.tsx",
+      "parent": "/client"
     },
     "/organization/create-event": {
       "filePath": "organization/create-event.tsx",
