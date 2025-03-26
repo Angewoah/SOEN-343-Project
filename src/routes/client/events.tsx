@@ -50,12 +50,11 @@ function ClientEventsComponent() {
   const matches = useMatches();
   const isEventDetailPage = matches.some(match => match.routeId === "/client/events/$eventId");
 
-  // Create a memoized Set of booked event IDs
+
   const userBookedEventIds = useMemo(() => {
     return new Set(userBookings?.map(booking => booking.event_id) || []);
   }, [userBookings]);
 
-  // Memoize the filtered events to prevent unnecessary re-renders
   const availableEvents = useMemo(() => {
     return events.filter(event => !userBookedEventIds.has(event.id));
   }, [events, userBookedEventIds]);
@@ -74,7 +73,7 @@ function ClientEventsComponent() {
     }
 
     loadEvents();
-  }, []); // Empty dependency array ensures this only runs once on mount
+  }, []); 
 
   const formatDate = (dateStr?: string) => {
     if (!dateStr) return "Not scheduled";
@@ -88,28 +87,27 @@ function ClientEventsComponent() {
 
     const handleBookEvent = async (eventId: number) => {
     if (!user) {
-      alert("Please log in to book an event");
+      //alert("Please log in to book an event");
       return;
     }
   
     try {
       setBookingInProgress(eventId);
       
-      // Create a new booking
       await createBooking({
         user_id: user.id,
         event_id: eventId,
-        status: "pending", // Keep this as "status" - will be mapped correctly in service
+        status: "pending", 
       });
       
-      // Show success message
-      alert("Booking request submitted successfully!");
+
+      //alert("Booking request submitted successfully!");
       
       // Refresh the page to update the list of available events
       window.location.reload();
     } catch (error) {
       console.error("Error booking event:", error);
-      alert("Failed to book event. Please try again.");
+      //alert("Failed to book event. Please try again.");
     } finally {
       setBookingInProgress(null);
     }

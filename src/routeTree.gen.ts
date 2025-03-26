@@ -23,6 +23,7 @@ import { Route as OrganizationEventsImport } from './routes/organization/events'
 import { Route as OrganizationDashboardImport } from './routes/organization/dashboard'
 import { Route as OrganizationCreateEventImport } from './routes/organization/create-event'
 import { Route as ClientEventsImport } from './routes/client/events'
+import { Route as ClientCalendarImport } from './routes/client/calendar'
 import { Route as ClientBookingsImport } from './routes/client/bookings'
 import { Route as authRegisterImport } from './routes/(auth)/register'
 import { Route as authLoginImport } from './routes/(auth)/login'
@@ -102,6 +103,12 @@ const OrganizationCreateEventRoute = OrganizationCreateEventImport.update({
 const ClientEventsRoute = ClientEventsImport.update({
   id: '/events',
   path: '/events',
+  getParentRoute: () => ClientRouteRoute,
+} as any)
+
+const ClientCalendarRoute = ClientCalendarImport.update({
+  id: '/calendar',
+  path: '/calendar',
   getParentRoute: () => ClientRouteRoute,
 } as any)
 
@@ -194,6 +201,13 @@ declare module '@tanstack/react-router' {
       path: '/bookings'
       fullPath: '/client/bookings'
       preLoaderRoute: typeof ClientBookingsImport
+      parentRoute: typeof ClientRouteImport
+    }
+    '/client/calendar': {
+      id: '/client/calendar'
+      path: '/calendar'
+      fullPath: '/client/calendar'
+      preLoaderRoute: typeof ClientCalendarImport
       parentRoute: typeof ClientRouteImport
     }
     '/client/events': {
@@ -306,11 +320,13 @@ const ClientEventsRouteWithChildren = ClientEventsRoute._addFileChildren(
 
 interface ClientRouteRouteChildren {
   ClientBookingsRoute: typeof ClientBookingsRoute
+  ClientCalendarRoute: typeof ClientCalendarRoute
   ClientEventsRoute: typeof ClientEventsRouteWithChildren
 }
 
 const ClientRouteRouteChildren: ClientRouteRouteChildren = {
   ClientBookingsRoute: ClientBookingsRoute,
+  ClientCalendarRoute: ClientCalendarRoute,
   ClientEventsRoute: ClientEventsRouteWithChildren,
 }
 
@@ -365,6 +381,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
   '/client/bookings': typeof ClientBookingsRoute
+  '/client/calendar': typeof ClientCalendarRoute
   '/client/events': typeof ClientEventsRouteWithChildren
   '/organization/create-event': typeof OrganizationCreateEventRoute
   '/organization/dashboard': typeof OrganizationDashboardRoute
@@ -387,6 +404,7 @@ export interface FileRoutesByTo {
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
   '/client/bookings': typeof ClientBookingsRoute
+  '/client/calendar': typeof ClientCalendarRoute
   '/client/events': typeof ClientEventsRouteWithChildren
   '/organization/create-event': typeof OrganizationCreateEventRoute
   '/organization/dashboard': typeof OrganizationDashboardRoute
@@ -410,6 +428,7 @@ export interface FileRoutesById {
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/register': typeof authRegisterRoute
   '/client/bookings': typeof ClientBookingsRoute
+  '/client/calendar': typeof ClientCalendarRoute
   '/client/events': typeof ClientEventsRouteWithChildren
   '/organization/create-event': typeof OrganizationCreateEventRoute
   '/organization/dashboard': typeof OrganizationDashboardRoute
@@ -434,6 +453,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/client/bookings'
+    | '/client/calendar'
     | '/client/events'
     | '/organization/create-event'
     | '/organization/dashboard'
@@ -455,6 +475,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/client/bookings'
+    | '/client/calendar'
     | '/client/events'
     | '/organization/create-event'
     | '/organization/dashboard'
@@ -476,6 +497,7 @@ export interface FileRouteTypes {
     | '/(auth)/login'
     | '/(auth)/register'
     | '/client/bookings'
+    | '/client/calendar'
     | '/client/events'
     | '/organization/create-event'
     | '/organization/dashboard'
@@ -532,6 +554,7 @@ export const routeTree = rootRoute
       "filePath": "client/route.tsx",
       "children": [
         "/client/bookings",
+        "/client/calendar",
         "/client/events"
       ]
     },
@@ -557,6 +580,10 @@ export const routeTree = rootRoute
     },
     "/client/bookings": {
       "filePath": "client/bookings.tsx",
+      "parent": "/client"
+    },
+    "/client/calendar": {
+      "filePath": "client/calendar.tsx",
       "parent": "/client"
     },
     "/client/events": {
