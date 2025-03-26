@@ -3,6 +3,8 @@
 import { User } from "@supabase/supabase-js";
 import { useUser } from "../../hooks/useUser";
 import { getSupabaseClient } from "../../supabase/client"
+import { Database } from "../../supabase/types";
+type Event = Database["public"]["Tables"]["events"]["Row"]
 
 const supabase = getSupabaseClient();
 
@@ -65,29 +67,26 @@ export async function createEvent(
   description: string, 
   duration: number, 
   maxAttendees: number,
-  venueId?: string,
-  eventDateTime?: Date
+  // venueId?: string,
+  // eventDateTime?: Date
 ) {
   try {
-    // Convert venueId to number
-    const venueIdNumber = venueId ? parseInt(venueId) : null;
+    // const venueIdNumber = venueId ? parseInt(venueId) : null;
     
-    // Create timeslot if venue and date time are provided
-    let timeslotId = null;
-    if (venueIdNumber && eventDateTime) {
-      timeslotId = await createTimeslot(venueIdNumber, eventDateTime, duration);
-    }
+    // let timeslotId = null;
+    // if (venueIdNumber && eventDateTime) {
+    //   timeslotId = await createTimeslot(venueIdNumber, eventDateTime, duration);
+    // }
     
-    // Create the event with the timeslot ID if available
     const { data, error } = await supabase.from('events').insert({
       organizer_id: organizerId,
       title,
       description,
       duration_minutes: duration,
       max_attendees: maxAttendees,
-      venue_id: venueIdNumber,
-      venue_timeslot_id: timeslotId,
-      status: 'active' // Setting a default status
+      // venue_id: venueIdNumber,
+      // venue_timeslot_id: timeslotId,
+      status: 'inactive' 
     })
     .select();
 

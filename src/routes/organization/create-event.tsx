@@ -33,8 +33,10 @@ const CreateEventSchema = z.object({
     .number()
     .int()
     .positive({ message: "Max attendees must be a positive number" }),
-  venueId: z.string().min(1, { message: "Please select a venue" }),
-  eventDateTime: z.string().min(1, { message: "Please select a date and time" }),
+  // venueId: z.string().min(1, { message: "Please select a venue" }),
+  // eventDateTime: z
+  //   .string()
+  //   .min(1, { message: "Please select a date and time" }),
 });
 
 type CreateEventFormData = z.infer<typeof CreateEventSchema>;
@@ -55,17 +57,17 @@ function CreateEventsPage() {
     async function fetchVenues() {
       try {
         const { data, error } = await supabase
-          .from('venues')
-          .select('*')
-          .order('name');
-          
+          .from("venues")
+          .select("*")
+          .order("name");
+
         if (error) throw error;
         setVenues(data || []);
       } catch (err) {
         console.error("Error fetching venues", err);
       }
     }
-    
+
     fetchVenues();
   }, []);
 
@@ -115,19 +117,19 @@ function CreateEventsPage() {
         data.title,
         data.description,
         data.duration,
-        data.maxAttendees,
-        data.venueId,
-        new Date(data.eventDateTime)
+        data.maxAttendees
+        // data.venueId,
+        // new Date(data.eventDateTime)
       );
 
       reset();
       console.log("Event created successfully", data);
-      navigate({ to: "/organization/events" });
+      navigate({ to: "/organization/events/overview" });
     } catch (error) {
       console.error("Failed to create event", error);
     }
   };
-  
+
   return (
     <div className="w-full flex flex-col items-center">
       <div className="h-20 w-full flex bg-white items-center rounded-t-4xl border-b-1 border-b-neutral-200">
@@ -231,19 +233,19 @@ function CreateEventsPage() {
               </div>
             </div>
 
-            <div>
-              <label
+            {/* <div> */}
+            {/* <label
                 htmlFor="venueId"
                 className="block text-2xl font-bold text-gray-700"
               >
                 Venue
-              </label>
-              <select
+              </label> */}
+            {/* <select
                 id="venueId"
                 {...register("venueId")}
                 className="mt-2 p-1 block w-full rounded-md border border-neutral-300 shadow-sm focus:outline-blue-300"
-              >
-                <option value="">Select a venue</option>
+              > */}
+            {/* <option value="">Select a venue</option>
                 {venues.map((venue) => (
                   <option 
                     key={venue.id} 
@@ -285,8 +287,8 @@ function CreateEventsPage() {
                   {errors.eventDateTime.message}
                 </p>
               )}
-            </div>
-            
+            </div> */}
+
             <div>
               <button
                 type="submit"
