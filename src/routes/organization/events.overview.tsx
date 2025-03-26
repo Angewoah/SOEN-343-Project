@@ -7,7 +7,7 @@ export const Route = createFileRoute("/organization/events/overview")({
 function RouteComponent() {
   const events = useLoaderData({ from: "/organization/events" }) ?? [];
 
-  const incompleteEvents = events.filter((event) => event.venue_id == null);
+  const incompleteEvents = events.filter((event) => event.status != "active");
   return (
     <div className="mt-6 flex flex-col">
       <h1 className="font-medium text-2xl">Complete your events</h1>
