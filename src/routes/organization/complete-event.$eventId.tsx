@@ -270,7 +270,9 @@ function CompleteEventPage() {
   }
 
   async function handleDeleteVenue() {
-    handleTimeslotDelete(selectedTimeslot!.id);
+    if (selectedTimeslot) {
+      handleTimeslotDelete(selectedTimeslot!.id);
+    }
     setSelectedVenue(null);
     setIsAddingVenue(false);
     setSearchText("");
@@ -334,7 +336,9 @@ function CompleteEventPage() {
 
   async function handleTimeslotDelete(venueTimeslotId: number) {
     if (!eventIdNumber) return;
-    updateTimeslotStatusTrue(venueTimeslotId);
+    if (venueTimeslotId) {
+      updateTimeslotStatusTrue(venueTimeslotId);
+    }
 
     try {
       const { error } = await supabase
