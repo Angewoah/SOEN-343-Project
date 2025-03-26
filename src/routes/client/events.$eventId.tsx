@@ -207,13 +207,13 @@ function EventDetailsComponent() {
                   </h1>
                 </div>
                 
-                <div className="flex items-center space-x-2 text-white/90">
+                <div className="flex items-center space-x-2 text-white/90 font-bold">
                   <CalendarIcon className="w-5 h-5" />
                   <span className="text-lg">{event.timeslot ? formatDate(event.timeslot.start_time ?? undefined) : "Date to be announced"}</span>
                 </div>
                 
                 {event.venue && (
-                  <div className="flex items-center space-x-2 text-white/90">
+                  <div className="flex items-center space-x-2 text-white/90 font-bold">
                     <MapPinIcon className="w-5 h-5" />
                     <span className="text-lg">{event.venue.name}</span>
                   </div>
@@ -333,7 +333,7 @@ function EventDetailsComponent() {
                       </div>
                     ) : (
                       <button 
-                        className="w-full bg-gradient-to-r from-sky-300 to-indigo-400 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-md transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                        className="w-full bg-gradient-to-r from-sky-300 to-indigo-400 text-white font-medium py-3 px-4 rounded-md transition-colors disabled:opacity-70 disabled:cursor-not-allowed hover:cursor-pointer hover:text-black"
                         onClick={handleBookEvent}
                         disabled={bookingInProgress}
                       >
