@@ -50,6 +50,7 @@ export async function createBooking(bookingData: BookingData) {
           user_id: bookingData.user_id,
           event_id: bookingData.event_id,
           registration_status: bookingData.status,
+          type: 'attendee',
         }
       ])
       .select();
@@ -65,3 +66,20 @@ export async function createBooking(bookingData: BookingData) {
     throw err;
   }
 }
+
+const getBookingTypeStyle = (bookingType?: string) => {
+  switch (bookingType?.toLowerCase()) {
+    case 'vip':
+      return 'bg-purple-100 text-purple-800';
+    case 'group':
+      return 'bg-blue-100 text-blue-800';
+    case 'individual':
+      return 'bg-green-100 text-green-800';
+    case 'family':
+      return 'bg-yellow-100 text-yellow-800';
+    case 'corporate':
+      return 'bg-indigo-100 text-indigo-800';
+    default:
+      return 'bg-gray-100 text-gray-800';
+  }
+};

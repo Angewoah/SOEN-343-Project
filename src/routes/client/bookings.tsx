@@ -36,6 +36,7 @@ function BookingsComponent() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<BookingStatus>('all');
   const [error, setError] = useState<string | null>(null);
+  const [processingBookingId, setProcessingBookingId] = useState<number | null>(null);
 
   useEffect(() => {
     async function loadBookings() {
@@ -124,6 +125,67 @@ function BookingsComponent() {
         return <span>{status}</span>;
     }
   };
+
+  const handleSpeakerResponse = async (bookingId: number, accept: boolean) => {
+    try {
+      setProcessingBookingId(bookingId);
+      
+      const supabase = getSupabaseClient();
+      
+      const { error } = await supabase
+        .from('bookings')
+        .update({ 
+          registration_status: accept ? 'confirmed' : 'declined' 
+        })
+        .eq('id', bookingId);
+      
+      if (error) throw error;
+      
+      // Update local state
+      setBookings(bookings.map(booking => 
+        booking.id === bookingId 
+          ? { ...booking, registration_status: accept ? 'confirmed' : 'declined' } 
+          : booking
+      ));
+      
+      //alert(`You have ${accept ? 'accepted' : 'declined'} the invitation`);
+    } catch (err) {
+      console.error(`Failed to ${accept ? 'accept' : 'decline'} invitation:`, err);
+      //alert(`Failed to ${accept ? 'accept' : 'decline'} invitation. Please try again.`);
+    } finally {
+      setProcessingBookingId(null);
+    }
+  };
+  
+  const handleReconsiderSpeaking = async (bookingId: number) => {
+    try {
+      setProcessingBookingId(bookingId);
+      
+      const supabase = getSupabaseClient();
+      
+      const { error } = await supabase
+        .from('bookings')
+        .update({ registration_status: 'pending' })
+        .eq('id', bookingId);
+      
+      if (error) throw error;
+      
+      // Update local state
+      setBookings(bookings.map(booking => 
+        booking.id === bookingId 
+          ? { ...booking, registration_status: 'pending' } 
+          : booking
+      ));
+      
+      //alert("Your decision has been reset to pending");
+    } catch (err) {
+      console.error("Failed to reset decision:", err);
+      //alert("Failed to reset your decision. Please try again.");
+    } finally {
+      setProcessingBookingId(null);
+    }
+  };
+
   
   return (
     <div className="container mx-auto p-6">
@@ -203,6 +265,7 @@ function BookingsComponent() {
                 <th className="text-left p-4 border-b">Event</th>
                 <th className="text-left p-4 border-b">Venue</th>
                 <th className="text-left p-4 border-b">Date & Time</th>
+                <th className="text-left p-4 border-b">Type</th>
                 <th className="text-left p-4 border-b">Status</th>
                 <th className="text-left p-4 border-b">Actions</th>
               </tr>
@@ -244,26 +307,87 @@ function BookingsComponent() {
                       </div>
                     </td>
                     <td className="p-4 border-b">
+                      <div className="px-3 py-1 inline-block bg-gray-100 text-gray-800 rounded-full text-sm">
+                        {booking.type || "Null"}
+                      </div>
+                    </td>
+                    <td className="p-4 border-b">
                       <StatusIndicator booking={booking} />
                     </td>
                     <td className="p-4 border-b">
-                      {status === 'confirmed' && (
-                        <button className="bg-red-100 text-red-700 px-4 py-1 rounded hover:bg-red-200 transition-colors">
-                          Cancel
-                        </button>
-                      )}
-                      {status === 'pending' && (
-                        <div className="space-y-2">
-                          <p className="text-sm text-gray-500">Awaiting confirmation</p>
-                          <button className="bg-red-100 text-red-700 px-4 py-1 rounded hover:bg-red-200 transition-colors">
-                            Cancel Request
-                          </button>
+                      {booking.type === 'attendee' ? (
+                        <>
+                          {status === 'confirmed' && (
+                            <button className="bg-red-100 text-red-700 px-4 py-1 rounded hover:bg-red-200 transition-colors">
+                              Cancel
+                            </button>
+                          )}
+                          {status === 'pending' && (
+                            <div className="space-y-2">
+                              <p className="text-sm text-gray-500">Awaiting confirmation</p>
+                              <button className="bg-red-100 text-red-700 px-4 py-1 rounded hover:bg-red-200 transition-colors">
+                                Cancel Request
+                              </button>
+                            </div>
+                          )}
+                          {status === 'declined' && (
+                            <button className="bg-blue-100 text-blue-700 px-4 py-1 rounded hover:bg-blue-200 transition-colors">
+                              Book Similar
+                            </button>
+                          )}
+                        </>
+                      ) : booking.type === 'speaker' ? (
+                      <>
+                        {status === 'pending' && (
+                          <div className="flex space-x-2">
+                            <button 
+                              className="bg-green-100 text-green-700 px-4 py-1 rounded hover:bg-green-200 transition-colors"
+                              onClick={() => handleSpeakerResponse(booking.id, true)}
+                            >
+                              Accept
+                            </button>
+                            <button 
+                              className="bg-red-100 text-red-700 px-4 py-1 rounded hover:bg-red-200 transition-colors"
+                              onClick={() => handleSpeakerResponse(booking.id, false)}
+                            >
+                              Decline
+                            </button>
+                          </div>
+                        )}
+                        {status === 'confirmed' && (
+                          <div className="space-y-2">
+                            <span className="text-green-500 font-medium flex items-center">
+                              <CheckCircleIcon className="w-4 h-4 mr-1" />
+                              You've accepted
+                            </span>
+                            <button 
+                              className="bg-red-100 text-red-700 px-4 py-1 rounded hover:bg-red-200 transition-colors w-full"
+                              onClick={() => handleReconsiderSpeaking(booking.id)}
+                            >
+                              Cancel Appearance
+                            </button>
+                          </div>
+                        )}
+                        {status === 'declined' && (
+                          <div className="space-y-2">
+                            <span className="text-red-500 font-medium flex items-center">
+                              <XCircleIcon className="w-4 h-4 mr-1" />
+                              You've declined
+                            </span>
+                            <button 
+                              className="bg-blue-100 text-blue-700 px-4 py-1 rounded hover:bg-blue-200 transition-colors w-full"
+                              onClick={() => handleReconsiderSpeaking(booking.id)}
+                            >
+                              Set to Pending
+                            </button>
+                          </div>
+                        )}
+                      </>
+                      ) : (
+                        // Default actions for other booking types
+                        <div className="text-gray-500 text-sm italic">
+                          No actions available
                         </div>
-                      )}
-                      {status === 'declined' && (
-                        <button className="bg-blue-100 text-blue-700 px-4 py-1 rounded hover:bg-blue-200 transition-colors">
-                          Book Similar
-                        </button>
                       )}
                     </td>
                   </tr>
