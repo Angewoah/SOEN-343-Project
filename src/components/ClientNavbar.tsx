@@ -12,16 +12,13 @@ export function ClientNavbar() {
         >
           Events
         </Link>
-        <Link
-          to="/client/bookings"
-          className="text-base font-mono hover:text-purple-600"
-        >
-          My Bookings
+        <Link to="/client/bookings" className="text-base font-mono hover:text-purple-600">
+          Bookings
         </Link>
-        <Link
-          to="/organization/dashboard"
-          className="text-base font-mono hover:text-purple-600"
-        >
+        <Link to="/client/calendar" className="text-base font-mono hover:text-purple-600">
+          Calendar
+        </Link>
+        <Link to="/organization/dashboard" className="text-base font-mono hover:text-purple-600">
           Switch to Event Organizer
         </Link>
       </div>

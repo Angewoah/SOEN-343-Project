@@ -29,6 +29,7 @@
     "@tailwindcss/vite": "^4.0.0",
     "@tanstack/react-router": "^1.98.0",
     "@tanstack/router-devtools": "^1.98.0",
+    "date-fns": "^4.1.0",
     "lucide-react": "^0.483.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
