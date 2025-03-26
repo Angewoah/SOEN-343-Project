@@ -36,15 +36,18 @@ export function Sidebar() {
             activeProps={{
               className: "font-medium text-purple-600/80",
             }}
-            activeOptions={{ exact: true }}
+            activeOptions={{ exact: false }}
             className="text-base rounded-sm p-1 hover:bg-neutral-200/70 transition-colors"
           >
             Home
           </Link>
           <Link
-            to="/organization/events"
+            to="/organization/events/overview"
             activeProps={{
               className: "font-medium text-purple-600/80",
+            }}
+            activeOptions={{
+              exact: false,
             }}
             className="text-base rounded-sm p-1 hover:bg-neutral-200/70 transition-colors"
           >

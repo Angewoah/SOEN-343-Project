@@ -25,6 +25,9 @@ import { Route as OrganizationCreateEventImport } from './routes/organization/cr
 import { Route as ClientEventsImport } from './routes/client/events'
 import { Route as authRegisterImport } from './routes/(auth)/register'
 import { Route as authLoginImport } from './routes/(auth)/login'
+import { Route as OrganizationEventsOverviewImport } from './routes/organization/events.overview'
+import { Route as OrganizationEventsAllImport } from './routes/organization/events.all'
+import { Route as OrganizationCompleteEventEventIdImport } from './routes/organization/complete-event.$eventId'
 
 // Create/Update Routes
 
@@ -111,6 +114,27 @@ const authLoginRoute = authLoginImport.update({
   path: '/login',
   getParentRoute: () => rootRoute,
 } as any)
+
+const OrganizationEventsOverviewRoute = OrganizationEventsOverviewImport.update(
+  {
+    id: '/overview',
+    path: '/overview',
+    getParentRoute: () => OrganizationEventsRoute,
+  } as any,
+)
+
+const OrganizationEventsAllRoute = OrganizationEventsAllImport.update({
+  id: '/all',
+  path: '/all',
+  getParentRoute: () => OrganizationEventsRoute,
+} as any)
+
+const OrganizationCompleteEventEventIdRoute =
+  OrganizationCompleteEventEventIdImport.update({
+    id: '/complete-event/$eventId',
+    path: '/complete-event/$eventId',
+    getParentRoute: () => OrganizationRouteRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -214,6 +238,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrganizationSettingsImport
       parentRoute: typeof OrganizationRouteImport
     }
+    '/organization/complete-event/$eventId': {
+      id: '/organization/complete-event/$eventId'
+      path: '/complete-event/$eventId'
+      fullPath: '/organization/complete-event/$eventId'
+      preLoaderRoute: typeof OrganizationCompleteEventEventIdImport
+      parentRoute: typeof OrganizationRouteImport
+    }
+    '/organization/events/all': {
+      id: '/organization/events/all'
+      path: '/all'
+      fullPath: '/organization/events/all'
+      preLoaderRoute: typeof OrganizationEventsAllImport
+      parentRoute: typeof OrganizationEventsImport
+    }
+    '/organization/events/overview': {
+      id: '/organization/events/overview'
+      path: '/overview'
+      fullPath: '/organization/events/overview'
+      preLoaderRoute: typeof OrganizationEventsOverviewImport
+      parentRoute: typeof OrganizationEventsImport
+    }
   }
 }
 
@@ -231,26 +276,41 @@ const ClientRouteRouteWithChildren = ClientRouteRoute._addFileChildren(
   ClientRouteRouteChildren,
 )
 
+interface OrganizationEventsRouteChildren {
+  OrganizationEventsAllRoute: typeof OrganizationEventsAllRoute
+  OrganizationEventsOverviewRoute: typeof OrganizationEventsOverviewRoute
+}
+
+const OrganizationEventsRouteChildren: OrganizationEventsRouteChildren = {
+  OrganizationEventsAllRoute: OrganizationEventsAllRoute,
+  OrganizationEventsOverviewRoute: OrganizationEventsOverviewRoute,
+}
+
+const OrganizationEventsRouteWithChildren =
+  OrganizationEventsRoute._addFileChildren(OrganizationEventsRouteChildren)
+
 interface OrganizationRouteRouteChildren {
   OrganizationCreateEventRoute: typeof OrganizationCreateEventRoute
   OrganizationDashboardRoute: typeof OrganizationDashboardRoute
-  OrganizationEventsRoute: typeof OrganizationEventsRoute
+  OrganizationEventsRoute: typeof OrganizationEventsRouteWithChildren
   OrganizationInsightsRoute: typeof OrganizationInsightsRoute
   OrganizationMarketingRoute: typeof OrganizationMarketingRoute
   OrganizationNetworkRoute: typeof OrganizationNetworkRoute
   OrganizationPaymentRoute: typeof OrganizationPaymentRoute
   OrganizationSettingsRoute: typeof OrganizationSettingsRoute
+  OrganizationCompleteEventEventIdRoute: typeof OrganizationCompleteEventEventIdRoute
 }
 
 const OrganizationRouteRouteChildren: OrganizationRouteRouteChildren = {
   OrganizationCreateEventRoute: OrganizationCreateEventRoute,
   OrganizationDashboardRoute: OrganizationDashboardRoute,
-  OrganizationEventsRoute: OrganizationEventsRoute,
+  OrganizationEventsRoute: OrganizationEventsRouteWithChildren,
   OrganizationInsightsRoute: OrganizationInsightsRoute,
   OrganizationMarketingRoute: OrganizationMarketingRoute,
   OrganizationNetworkRoute: OrganizationNetworkRoute,
   OrganizationPaymentRoute: OrganizationPaymentRoute,
   OrganizationSettingsRoute: OrganizationSettingsRoute,
+  OrganizationCompleteEventEventIdRoute: OrganizationCompleteEventEventIdRoute,
 }
 
 const OrganizationRouteRouteWithChildren =
@@ -265,12 +325,15 @@ export interface FileRoutesByFullPath {
   '/client/events': typeof ClientEventsRoute
   '/organization/create-event': typeof OrganizationCreateEventRoute
   '/organization/dashboard': typeof OrganizationDashboardRoute
-  '/organization/events': typeof OrganizationEventsRoute
+  '/organization/events': typeof OrganizationEventsRouteWithChildren
   '/organization/insights': typeof OrganizationInsightsRoute
   '/organization/marketing': typeof OrganizationMarketingRoute
   '/organization/network': typeof OrganizationNetworkRoute
   '/organization/payment': typeof OrganizationPaymentRoute
   '/organization/settings': typeof OrganizationSettingsRoute
+  '/organization/complete-event/$eventId': typeof OrganizationCompleteEventEventIdRoute
+  '/organization/events/all': typeof OrganizationEventsAllRoute
+  '/organization/events/overview': typeof OrganizationEventsOverviewRoute
 }
 
 export interface FileRoutesByTo {
@@ -282,12 +345,15 @@ export interface FileRoutesByTo {
   '/client/events': typeof ClientEventsRoute
   '/organization/create-event': typeof OrganizationCreateEventRoute
   '/organization/dashboard': typeof OrganizationDashboardRoute
-  '/organization/events': typeof OrganizationEventsRoute
+  '/organization/events': typeof OrganizationEventsRouteWithChildren
   '/organization/insights': typeof OrganizationInsightsRoute
   '/organization/marketing': typeof OrganizationMarketingRoute
   '/organization/network': typeof OrganizationNetworkRoute
   '/organization/payment': typeof OrganizationPaymentRoute
   '/organization/settings': typeof OrganizationSettingsRoute
+  '/organization/complete-event/$eventId': typeof OrganizationCompleteEventEventIdRoute
+  '/organization/events/all': typeof OrganizationEventsAllRoute
+  '/organization/events/overview': typeof OrganizationEventsOverviewRoute
 }
 
 export interface FileRoutesById {
@@ -300,12 +366,15 @@ export interface FileRoutesById {
   '/client/events': typeof ClientEventsRoute
   '/organization/create-event': typeof OrganizationCreateEventRoute
   '/organization/dashboard': typeof OrganizationDashboardRoute
-  '/organization/events': typeof OrganizationEventsRoute
+  '/organization/events': typeof OrganizationEventsRouteWithChildren
   '/organization/insights': typeof OrganizationInsightsRoute
   '/organization/marketing': typeof OrganizationMarketingRoute
   '/organization/network': typeof OrganizationNetworkRoute
   '/organization/payment': typeof OrganizationPaymentRoute
   '/organization/settings': typeof OrganizationSettingsRoute
+  '/organization/complete-event/$eventId': typeof OrganizationCompleteEventEventIdRoute
+  '/organization/events/all': typeof OrganizationEventsAllRoute
+  '/organization/events/overview': typeof OrganizationEventsOverviewRoute
 }
 
 export interface FileRouteTypes {
@@ -325,6 +394,9 @@ export interface FileRouteTypes {
     | '/organization/network'
     | '/organization/payment'
     | '/organization/settings'
+    | '/organization/complete-event/$eventId'
+    | '/organization/events/all'
+    | '/organization/events/overview'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -341,6 +413,9 @@ export interface FileRouteTypes {
     | '/organization/network'
     | '/organization/payment'
     | '/organization/settings'
+    | '/organization/complete-event/$eventId'
+    | '/organization/events/all'
+    | '/organization/events/overview'
   id:
     | '__root__'
     | '/'
@@ -357,6 +432,9 @@ export interface FileRouteTypes {
     | '/organization/network'
     | '/organization/payment'
     | '/organization/settings'
+    | '/organization/complete-event/$eventId'
+    | '/organization/events/all'
+    | '/organization/events/overview'
   fileRoutesById: FileRoutesById
 }
 
@@ -412,7 +490,8 @@ export const routeTree = rootRoute
         "/organization/marketing",
         "/organization/network",
         "/organization/payment",
-        "/organization/settings"
+        "/organization/settings",
+        "/organization/complete-event/$eventId"
       ]
     },
     "/(auth)/login": {
@@ -435,7 +514,11 @@ export const routeTree = rootRoute
     },
     "/organization/events": {
       "filePath": "organization/events.tsx",
-      "parent": "/organization"
+      "parent": "/organization",
+      "children": [
+        "/organization/events/all",
+        "/organization/events/overview"
+      ]
     },
     "/organization/insights": {
       "filePath": "organization/insights.tsx",
@@ -456,6 +539,18 @@ export const routeTree = rootRoute
     "/organization/settings": {
       "filePath": "organization/settings.tsx",
       "parent": "/organization"
+    },
+    "/organization/complete-event/$eventId": {
+      "filePath": "organization/complete-event.$eventId.tsx",
+      "parent": "/organization"
+    },
+    "/organization/events/all": {
+      "filePath": "organization/events.all.tsx",
+      "parent": "/organization/events"
+    },
+    "/organization/events/overview": {
+      "filePath": "organization/events.overview.tsx",
+      "parent": "/organization/events"
     }
   }
 }

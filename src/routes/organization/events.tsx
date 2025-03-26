@@ -10,6 +10,7 @@ import { useUser } from "../../hooks/useUser";
 import { Sidebar } from "../../components/Sidebar";
 import { fetchEvents } from "../../modules/event/service";
 import { PlusIcon } from "@heroicons/react/24/solid";
+import { EventsNav } from "../../components/EventsNav";
 
 export const Route = createFileRoute("/organization/events")({
   component: RouteComponent,
@@ -41,26 +42,7 @@ function RouteComponent() {
             <PlusIcon className="w-6 h-6 mr-1" /> New event
           </Link>
         </div>
-
-        <div className="mt-6">
-          {events.length === 0 ? (
-            <p>No events found</p>
-          ) : (
-            events.map((event) => (
-              <div
-                key={event.id}
-                className="border-2 border-neutral-300 p-4 mb-4 rounded-lg"
-              >
-                <h2 className="text-xl font-bold">{event.title}</h2>
-                <p>{event.description}</p>
-                <div className="flex justify-between mt-2">
-                  <span>Duration: {event.duration_minutes} minutes</span>
-                  <span>Max Attendees: {event.max_attendees}</span>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
+        <EventsNav />
         <Outlet />
       </div>
     </>

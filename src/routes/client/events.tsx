@@ -1,19 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { fetchAllEvents } from "../../modules/event/service";
+import { Database } from "../../supabase/types";
 
 export const Route = createFileRoute("/client/events")({
   component: ClientEventsComponent,
 });
 
-type Event = {
-  id: string;
-  title: string;
-  description: string;
-  duration_minutes: number;
-  max_attendees: number;
-  created_at: string;
-};
+type Event = Database["public"]["Tables"]["events"]["Row"];
 
 function ClientEventsComponent() {
   const [events, setEvents] = useState<Event[]>([]);
@@ -38,7 +32,7 @@ function ClientEventsComponent() {
   return (
     <div className="client-events">
       <h1 className="text-2xl font-bold mb-6">Available Events</h1>
-      
+
       {loading ? (
         <div className="flex justify-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
@@ -54,8 +48,10 @@ function ClientEventsComponent() {
               <h2 className="text-lg font-semibold">{event.title}</h2>
               <p className="text-gray-600 mt-2">{event.description}</p>
               <div className="mt-4 flex justify-between items-center">
-                <span className="text-sm text-gray-500">{event.duration_minutes} minutes</span>
-                <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                <span className="text-sm text-gray-500">
+                  {event.duration_minutes} minutes
+                </span>
+                <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 cursor-pointer">
                   Book Now
                 </button>
               </div>
