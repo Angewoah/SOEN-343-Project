@@ -67,25 +67,14 @@ export async function createEvent(
   description: string, 
   duration: number, 
   maxAttendees: number,
-  // venueId?: string,
-  // eventDateTime?: Date
 ) {
   try {
-    // const venueIdNumber = venueId ? parseInt(venueId) : null;
-    
-    // let timeslotId = null;
-    // if (venueIdNumber && eventDateTime) {
-    //   timeslotId = await createTimeslot(venueIdNumber, eventDateTime, duration);
-    // }
-    
     const { data, error } = await supabase.from('events').insert({
       organizer_id: organizerId,
       title,
       description,
       duration_minutes: duration,
       max_attendees: maxAttendees,
-      // venue_id: venueIdNumber,
-      // venue_timeslot_id: timeslotId,
       status: 'inactive' 
     })
     .select();
@@ -101,6 +90,19 @@ export async function createEvent(
     throw err; 
   }
 }
+
+export async function updateEvent(eventId: number, title: string, description: string) {
+  try {
+    const { error } = await supabase
+    .from("events")
+    .update({ title: title, description: description })
+    .eq("id", eventId);
+
+    if (error) throw error;
+  } catch (error) {
+    console.error("Error updating event", error)
+  }
+} 
 
 
 
@@ -140,15 +142,10 @@ export async function fetchAllEventsWithDetails() {
   }
 }
 
-
-
-// Add or update in your service.ts file
-
 export async function fetchEventById(eventId: string) {
   try {
     console.log("Service: Fetching event with ID:", eventId);
     
-    // Ensure eventId is not undefined
     if (!eventId) {
       console.error("Invalid event ID provided:", eventId);
       return null;

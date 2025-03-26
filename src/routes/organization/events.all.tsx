@@ -1,4 +1,4 @@
-import { createFileRoute, useLoaderData } from "@tanstack/react-router";
+import { createFileRoute, Link, useLoaderData } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 
 export const Route = createFileRoute("/organization/events/all")({
@@ -39,11 +39,24 @@ function RouteComponent() {
             key={event.id}
             className="border-2 border-neutral-300 p-4 mb-4 rounded-lg"
           >
-            <h2 className="text-xl font-bold">{event.title}</h2>
-            <p>{event.description}</p>
-            <div className="flex justify-between mt-2">
-              <span>Duration: {event.duration_minutes} minutes</span>
-              <span>Max Attendees: {event.max_attendees}</span>
+            <div className="flex justify-between">
+              <div className="flex flex-col">
+                <h2 className="text-xl font-bold">{event.title}</h2>
+
+                <p>{event.description}</p>
+                <p>Duration: {event.duration_minutes} minutes</p>
+                <p>Max Attendees: {event.max_attendees}</p>
+              </div>
+
+              <div className="flex flex-col gap-2 w-full max-w-48">
+                <Link
+                  to="/organization/edit/$eventId"
+                  params={{ eventId: `${event.id}` }}
+                  className="font-medium text-center text-md text-black  hover:bg-neutral-100 p-2 rounded-lg transition-colors border-2 border-neutral-300"
+                >
+                  Edit event details
+                </Link>
+              </div>
             </div>
           </div>
         ))

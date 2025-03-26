@@ -5,15 +5,15 @@ export function EventsNav() {
     <>
       <div className="flex text-lg w-full gap-8 mt-4 ">
         <Link
-          to="/organization/events/overview"
+          to="/organization/events/inactive"
           activeProps={{
             className:
               "font-medium text-purple-600/80 pb-3 border-b-2 border-b-purple-600/80",
           }}
           activeOptions={{ exact: false }}
-          className="text-base hover:bg-neutral-200/70 transition-colors"
+          className="text-base hover:text-purple-700 transition-colors"
         >
-          Overview
+          Inactive Events
         </Link>
         <Link
           to="/organization/events/all"
@@ -22,7 +22,7 @@ export function EventsNav() {
               "font-medium text-purple-600/80 pb-3 border-b-2 border-b-purple-600/80",
           }}
           activeOptions={{ exact: false }}
-          className="text-base hover:bg-neutral-200/70 transition-colors"
+          className="text-base hover:text-purple-700 transition-colors"
         >
           All Events
         </Link>
