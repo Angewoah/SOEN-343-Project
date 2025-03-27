@@ -56,6 +56,13 @@ function RouteComponent() {
                 >
                   Edit event details
                 </Link>
+                <Link
+                  to="/organization/manage-memberships/$eventId"
+                  params={{ eventId: `${event.id}` }}
+                  className="font-medium text-center text-md text-black  hover:bg-neutral-100 p-2 rounded-lg transition-colors border-2 border-neutral-300"
+                >
+                  Manage memberships
+                </Link>
               </div>
             </div>
           </div>
