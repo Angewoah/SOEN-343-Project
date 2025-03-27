@@ -6,7 +6,7 @@ import { getSupabaseClient } from "../../supabase/client";
 import { Sidebar } from "../../components/Sidebar";
 
 export const Route = createFileRoute("/organization/insights")({
-  component: RouteComponent
+  component: RouteComponent,
 });
 
 function RouteComponent() {
@@ -15,25 +15,24 @@ function RouteComponent() {
   const [eventId, setEventId] = useState(null);
   const [attendeeList, setAttendeeList] = useState([]);
   const [query, setQuery] = useState("");
-  
+
   useEffect(() => {
     if (eventId == null) {
       return;
-      
     }
-    const fetchAttendeeIdArr = async (eventId) => {
+    const fetchAttendeeIdArr = async (eventId: number) => {
       const { data } = await supabase
         .from("bookings")
         .select("user_id")
         .eq("event_id", eventId);
       return data;
     };
-    const fetchAttendee = async (attendeeId) => {
-        const { data } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("user_id", attendeeId);
-        return data;
+    const fetchAttendee = async (attendeeId: number) => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("user_id", attendeeId);
+      return data;
     };
     const fetchAttendeeArr = async () => {
       const attendeeIdArr = await fetchAttendeeIdArr(eventId);
@@ -48,7 +47,7 @@ function RouteComponent() {
 
     fetchAttendeeArr();
   }, [eventId]);
-  
+
   return (
     <>
       <Sidebar />
@@ -62,7 +61,6 @@ function RouteComponent() {
             const value = e.target.value;
             if (value !== "" && typeof +value === "number") {
               setEventId(value);
-              
             }
             setQuery(value);
             return;
