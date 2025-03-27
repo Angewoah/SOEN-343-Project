@@ -26,10 +26,14 @@ export const Route = createFileRoute("/organization/insights")({
       const bookingData = bookingArr[i];
       const confirmationData = bookingData.filter((booking) => 
         booking.registration_status === "confirmed");
+      const attendeeData = bookingData.filter((booking) => 
+        booking.type === "attendee");
+      console.log(bookingData);
       return {
         event: eventData,
         confirmations: confirmationData.length,
         tentatives: bookingData.length - confirmationData.length,
+        attendees: attendeeData.length
       };
     });
     
@@ -49,18 +53,22 @@ function RouteComponent() {
       <div className="w-full flex flex-col px-72 py-4">
         <h1 className="text-4xl mb-10">Insights</h1>
         {eventData.map((entry) => {
-          const { event, confirmations, tentatives } = entry;
+          const { event, confirmations, tentatives, attendees } = entry;
           
-          return <div
+          return (<div
               key={event.id}
               className="border-2 border-neutral-300 p-4 mb-4 rounded-lg"
               >
               <h2 className="text-center">{event.title}</h2>
               <p>Description: {event.description}</p>
+              <p>Status: {event.status}</p>
               <p>Confirmed Registrations: {confirmations}</p>
-              <p>Tentative Registrations: {tentatives}</p>
-            {console.log(entry)}
-            </div>
+              <p>Pending Registrations: {tentatives}</p>
+              <p>
+                Total Amount of Attendees: {attendees} 
+                /{event.max_attendees}
+              </p>
+            </div>);
         })}
       </div>
     </>
