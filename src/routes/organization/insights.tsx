@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLoaderData } from "@tanstack/react-router";
-import { createFileRoute } from "@tanstack/react-router";
+import { useLoaderData, createFileRoute, Link } from "@tanstack/react-router";
 import { fetchEventBookings } from "../../modules/booking/service";
 import { fetchEvents } from "../../modules/event/service";
 import { getSupabaseClient } from "../../supabase/client";
@@ -28,7 +27,6 @@ export const Route = createFileRoute("/organization/insights")({
         booking.registration_status === "confirmed");
       const attendeeData = bookingData.filter((booking) => 
         booking.type === "attendee");
-      console.log(bookingData);
       return {
         event: eventData,
         confirmations: confirmationData.length,
@@ -42,11 +40,7 @@ export const Route = createFileRoute("/organization/insights")({
 });
 
 function RouteComponent() {
-  const supabase = getSupabaseClient();
-  const [eventId, setEventId] = useState(null);
-  const [query, setQuery] = useState("");
   const eventData = useLoaderData({ from: "/organization/insights" }) ?? [];
-  
   return (
     <>
       <Sidebar />
@@ -54,20 +48,30 @@ function RouteComponent() {
         <h1 className="text-4xl mb-10">Insights</h1>
         {eventData.map((entry) => {
           const { event, confirmations, tentatives, attendees } = entry;
-          
           return (<div
               key={event.id}
               className="border-2 border-neutral-300 p-4 mb-4 rounded-lg"
               >
               <h2 className="text-center">{event.title}</h2>
-              <p>Description: {event.description}</p>
-              <p>Status: {event.status}</p>
-              <p>Confirmed Registrations: {confirmations}</p>
-              <p>Pending Registrations: {tentatives}</p>
-              <p>
-                Total Amount of Attendees: {attendees} 
-                /{event.max_attendees}
-              </p>
+              <div>
+                <p>Description: {event.description}</p>
+                <p>Status: {event.status}</p>
+                <p>Confirmed Registrations: {confirmations}</p>
+                <p>Pending Registrations: {tentatives}</p>
+                <p>
+                  Total Amount of Attendees: {attendees} 
+                  /{event.max_attendees}
+                </p>
+              </div>
+              <div className="flex flex-col gap-2 w-full max-w-48">
+                <Link
+                  to="/organization/report/$eventId"
+                  params={{ eventId: `${event.id}` }}
+                  className="font-medium text-md text-white bg-purple-500 hover:bg-purple-700 p-2 border-2 rounded-lg transition-colors text-center"
+                >
+                  See Report
+                </Link>
+              </div>
             </div>);
         })}
       </div>
