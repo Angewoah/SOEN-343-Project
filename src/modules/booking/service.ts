@@ -7,6 +7,8 @@ export type BookingWithDetails = Database['public']['Tables']['bookings']['Row']
     timeslot?: Database['public']['Tables']['venue_timeslots']['Row'] | null;
   } | null;
 };
+const supabase = getSupabaseClient();
+
 
 export async function fetchUserBookings(userId: string) {
   try {
@@ -14,7 +16,6 @@ export async function fetchUserBookings(userId: string) {
       throw new Error('User ID is required');
     }
 
-    const supabase = getSupabaseClient();
     
     const { data, error } = await supabase
       .from('bookings')
@@ -41,11 +42,48 @@ export async function fetchUserBookings(userId: string) {
   }
 }
 
-type BookingData = {
-  user_id: string;
-  event_id: number;
-  status: string;
-};
+export async function fetchEventBookings(eventId: number) {
+  try {
+    const { data, error } = await supabase
+      .from('bookings')
+      .select(`
+        *,
+        event:event_id(
+          *,
+          venue:venue_id(*),
+          timeslot:venue_timeslot_id(*)
+        )
+      `)
+      .eq('event_id', eventId)
+      .order('created_at', { ascending: false });
+    
+    if (error) {
+      console.error('Error fetching user bookings:', error);
+      throw error;
+    }
+    
+    return data || [];
+  } catch (err) {
+    console.error('Error in fetchUserBookings:', err);
+    return [];
+  }
+}
+
+export async function updateBooking(bookingId: number, status: string) {
+  try {
+    const { error } = await supabase
+    .from("bookings")
+    .update({ registration_status: status })
+    .eq("id", bookingId);
+
+    if (error) throw error;
+  } catch (error) {
+    console.error("Error updating event", error)
+  }
+
+}
+
+
 
 /**
  * Get CSS classes for styling a booking type badge
