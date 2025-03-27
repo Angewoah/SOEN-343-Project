@@ -11,6 +11,7 @@ function RouteComponent() {
       <Sidebar />
       <div className="w-full flex flex-col px-72 py-4">
         <h1 className="text-4xl ">Payment</h1>
+        <h2 className="font-medium mt-12">Coming next sprint !</h2>
       </div>
     </>
   );
