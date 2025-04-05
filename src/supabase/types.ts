@@ -88,6 +88,7 @@ export type Database = {
           title: string | null
           venue_id: number | null
           venue_timeslot_id: number | null
+          tags: string[] | null
         }
         Insert: {
           created_at?: string
@@ -100,6 +101,7 @@ export type Database = {
           title?: string | null
           venue_id?: number | null
           venue_timeslot_id?: number | null
+          tags: string[] | null
         }
         Update: {
           created_at?: string
@@ -112,6 +114,7 @@ export type Database = {
           title?: string | null
           venue_id?: number | null
           venue_timeslot_id?: number | null
+          tags: string[] | null
         }
         Relationships: [
           {

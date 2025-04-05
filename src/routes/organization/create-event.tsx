@@ -33,9 +33,12 @@ const CreateEventSchema = z.object({
     .number()
     .int()
     .positive({ message: "Max attendees must be a positive number" }),
+  tags: z.array(z.string()).optional(),
 });
 
 type CreateEventFormData = z.infer<typeof CreateEventSchema>;
+
+const AVAILABLE_TAGS = ["educational", "entertainment", "networking"];
 
 export const Route = createFileRoute("/organization/create-event")({
   component: CreateEventsPage,
@@ -47,6 +50,7 @@ function CreateEventsPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [venues, setVenues] = useState<Venue[]>([]);
   const navigate = useNavigate();
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   // Fetch venues from the database
   useEffect(() => {
@@ -99,11 +103,50 @@ function CreateEventsPage() {
     formState: { errors },
     reset,
     watch,
+    setValue,
   } = useForm<CreateEventFormData>({
     resolver: zodResolver(CreateEventSchema),
+    defaultValues: {
+      tags: [],
+    }
   });
 
   const maxAttendees = watch("maxAttendees");
+
+  const toggleTag = (tag: string) => {
+    setSelectedTags(prevTags => {
+      const newTags = prevTags.includes(tag)
+        ? prevTags.filter(t => t !== tag)
+        : [...prevTags, tag];
+      
+
+      setValue('tags', newTags);
+      return newTags;
+    });
+  };
+
+  const getTagColor = (tag: string) => {
+    const isSelected = selectedTags.includes(tag);
+    
+    switch (tag) {
+      case 'educational':
+        return isSelected 
+          ? 'bg-blue-500 text-white' 
+          : 'bg-blue-100 text-blue-700 hover:bg-blue-200';
+      case 'entertainment':
+        return isSelected 
+          ? 'bg-purple-500 text-white' 
+          : 'bg-purple-100 text-purple-700 hover:bg-purple-200';
+      case 'networking':
+        return isSelected 
+          ? 'bg-green-500 text-white' 
+          : 'bg-green-100 text-green-700 hover:bg-green-200';
+      default:
+        return isSelected 
+          ? 'bg-gray-500 text-white' 
+          : 'bg-gray-100 text-gray-700 hover:bg-gray-200';
+    }
+  };
 
   const onSubmit = (data: CreateEventFormData) => {
     if (!user) return;
@@ -113,10 +156,12 @@ function CreateEventsPage() {
         data.title,
         data.description,
         data.duration,
-        data.maxAttendees
+        data.maxAttendees,
+        data.tags || []
       );
 
       reset();
+      setSelectedTags([]);
       console.log("Event created successfully", data);
       navigate({ to: "/organization/events/inactive" });
     } catch (error) {
@@ -225,6 +270,31 @@ function CreateEventsPage() {
                   </p>
                 )}
               </div>
+            </div>
+
+            {/* Add tag selection section */}
+            <div>
+              <label
+                className="block text-2xl font-bold text-gray-700"
+              >
+                Event Tags
+              </label>
+              <p className="mt-2 text-sm text-gray-500 mb-3">
+                Select all tags that apply to your event. Tags help attendees find events they're interested in.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {AVAILABLE_TAGS.map(tag => (
+                  <button
+                    key={tag}
+                    type="button" 
+                    onClick={() => toggleTag(tag)}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${getTagColor(tag)}`}
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
+              
             </div>
 
             <div>
