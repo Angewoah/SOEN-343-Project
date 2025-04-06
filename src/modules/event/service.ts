@@ -62,32 +62,33 @@ export async function createTimeslot(
 
 
 export async function createEvent(
-  organizerId: string, 
-  title: string, 
-  description: string, 
-  duration: number, 
+  organizerId: string,
+  title: string,
+  description: string,
+  durationMinutes: number,
   maxAttendees: number,
+  tags: string[] = [] 
 ) {
   try {
-    const { data, error } = await supabase.from('events').insert({
-      organizer_id: organizerId,
-      title,
-      description,
-      duration_minutes: duration,
-      max_attendees: maxAttendees,
-      status: 'inactive' 
-    })
-    .select();
-
-    if (error) {
-      console.error("Error inserting event", error);
-      throw error;  
-    }
+    const { data, error } = await supabase
+      .from('events')
+      .insert({
+        organizer_id: organizerId,
+        title,
+        description,
+        duration_minutes: durationMinutes,
+        max_attendees: maxAttendees,
+        status: 'inactive',
+        tags, // Add the tags field here
+      })
+      .select()
+      .single();
     
-    return data?.[0];
+    if (error) throw error;
+    return data;
   } catch (err) {
-    console.error("Error creating event", err);
-    throw err; 
+    console.error("Error creating event:", err);
+    throw err;
   }
 }
 
