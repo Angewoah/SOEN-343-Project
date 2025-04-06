@@ -42,5 +42,5 @@ function RouteComponent() {
         })}
       </div>
     </>
-  )
+  );
 }
