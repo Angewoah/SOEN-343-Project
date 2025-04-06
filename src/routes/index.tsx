@@ -16,7 +16,7 @@ function HomeComponent() {
   return (
     <div className="flex gap-x-8">
       {user ? (
-        <Link to="/organization/dashboard">Go to organization</Link>
+        <Link to="/organization/events/inactive">Go to organization</Link>
       ) : (
         <Link to="/login">Go to login</Link>
       )}
