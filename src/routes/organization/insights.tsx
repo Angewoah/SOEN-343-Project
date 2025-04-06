@@ -5,6 +5,7 @@ import { fetchEventBookings } from "../../modules/booking/service";
 import { fetchEvents } from "../../modules/event/service";
 import { getSupabaseClient } from "../../supabase/client";
 import { Sidebar } from "../../components/Sidebar";
+import { Graph } from "../../components/Graph";
 
 export const Route = createFileRoute("/organization/insights")({
   component: RouteComponent,
@@ -31,7 +32,7 @@ export const Route = createFileRoute("/organization/insights")({
       return {
         event: eventData,
         confirmations: confirmationData.length,
-        tentatives: bookingData.length - confirmationData.length,
+        bookingData: bookingData,
         attendees: attendeeData.length
       };
     });
@@ -47,15 +48,15 @@ function Filter(props) {
 
 function RouteComponent() {
   const eventData = useLoaderData({ from: "/organization/insights" }) ?? [];
-  const [filterDropdownVisible, setFilterDropdownVisible] = useState(false);
-  const [filterMode, setFilterMode] = useState("popularity");
+  const [sortDropdownVisible, setSortDropdownVisible] = useState(false);
+  const [sortMode, setSortMode] = useState("popularity");
   const dropdown = ["popularity", "trending"].map((name, index) => {
     return <li 
       className="hover:bg-gray-100 rounded-lg" 
       key={index}
       onClick={() => {
-        setFilterMode(name);
-        setFilterDropdownVisible(false);
+        setSortMode(name);
+        setSortDropdownVisible(false);
       }}
     >
       By {name}
@@ -72,7 +73,7 @@ function RouteComponent() {
             type="button" 
             className="font-medium text-md text-white bg-purple-500 hover:bg-purple-700 p-2 border-2 rounded-lg transition-colors text-center flex flex-row place-content-between items-center cursor-pointer w-32"
             onClick={() => {
-              setFilterDropdownVisible(!filterDropdownVisible);
+              setSortDropdownVisible(!sortDropdownVisible);
             }}
           >
             Sort 
@@ -84,7 +85,7 @@ function RouteComponent() {
               
             }}
           >
-            { filterDropdownVisible ? 
+            { sortDropdownVisible ? 
               <ul className="border-2 rounded-lg border-neutral-300">
                 {dropdown}
               </ul>
@@ -92,31 +93,40 @@ function RouteComponent() {
             }
           </div>
           {eventData.map((entry) => {
-            const { event, confirmations, tentatives, attendees } = entry;
+            const { event, confirmations, bookingData, attendees } = entry;
+            const bookings = bookingData.length;
             return (
               <div
                 key={event.id}
-                className="border-2 border-neutral-300 rounded-lg my-4"
+                className="border-2 border-neutral-300 rounded-lg my-4 p-2 "
               >
-                <h2 className="text-center">{event.title}</h2>
-                <div>
-                  <p>Description: {event.description}</p>
-                  <p>Status: {event.status}</p>
-                  <p>Confirmed Registrations: {confirmations}</p>
-                  <p>Pending Registrations: {tentatives}</p>
-                  <p>
-                    Total Amount of Attendees: {attendees} 
-                    /{event.max_attendees}
-                  </p>
-                </div>
-                <div className="flex flex-col gap-2 w-full max-w-48">
-                  <Link
-                    to="/organization/report/$eventId"
-                    params={{ eventId: `${event.id}` }}
-                    className="font-medium text-md text-white bg-purple-500 hover:bg-purple-700 p-2 border-2 rounded-lg transition-colors text-center"
-                  >
-                    See Report
-                  </Link>
+                <h2 className="text-center font-bold">{event.title}</h2>
+                <div className="place-content-between gap-4 flex flex-row">
+                  <div>
+                    <p>
+                      Attendees: {attendees} 
+                      /{event.max_attendees}
+                    </p>
+                    { bookings > 0 ? <p>
+                      Confirmations: {confirmations}/{bookings} 
+                      {" booking" + (bookings === 1 ? "" : "s")}
+                    </p> : <p>
+                      No bookings so far.
+                    </p>}
+                    <p>
+                      Status: {event.status}
+                    </p>
+                    <div className="flex flex-col gap-2 w-full max-w-48">
+                      <Link
+                        to="/organization/report/$eventId"
+                        params={{ eventId: `${event.id}` }}
+                        className="font-medium text-md text-white bg-purple-500 hover:bg-purple-700 p-2 border-2 rounded-lg transition-colors text-center"
+                      >
+                        See Report
+                      </Link>
+                    </div>
+                  </div>
+                  <Graph event={event}/>
                 </div>
               </div>
             );
