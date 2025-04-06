@@ -12,7 +12,6 @@ function RootComponent() {
   return (
     <UserProvider>
       <Outlet />
-      <TanStackRouterDevtools position="bottom-right" />
     </UserProvider>
   );
 }

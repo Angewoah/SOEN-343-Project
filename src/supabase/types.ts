@@ -76,6 +76,30 @@ export type Database = {
           },
         ]
       }
+      conversations: {
+        Row: {
+          created_at: string
+          id: number
+          last_message_text: string | null
+          last_message_time: string | null
+          title: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          last_message_text?: string | null
+          last_message_time?: string | null
+          title?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          last_message_text?: string | null
+          last_message_time?: string | null
+          title?: string | null
+        }
+        Relationships: []
+      }
       events: {
         Row: {
           created_at: string
@@ -85,6 +109,7 @@ export type Database = {
           max_attendees: number | null
           organizer_id: string | null
           status: string | null
+          tags: string | null
           title: string | null
           venue_id: number | null
           venue_timeslot_id: number | null
@@ -97,6 +122,7 @@ export type Database = {
           max_attendees?: number | null
           organizer_id?: string | null
           status?: string | null
+          tags?: string | null
           title?: string | null
           venue_id?: number | null
           venue_timeslot_id?: number | null
@@ -109,6 +135,7 @@ export type Database = {
           max_attendees?: number | null
           organizer_id?: string | null
           status?: string | null
+          tags?: string | null
           title?: string | null
           venue_id?: number | null
           venue_timeslot_id?: number | null
@@ -140,32 +167,80 @@ export type Database = {
       messages: {
         Row: {
           content: string | null
+          conversation_id: number | null
           created_at: string
           id: number
           is_read: boolean | null
-          recipient_id: number | null
-          sender_id: number | null
-          thread_id: number | null
+          sender_id: string | null
         }
         Insert: {
           content?: string | null
+          conversation_id?: number | null
           created_at?: string
           id?: number
           is_read?: boolean | null
-          recipient_id?: number | null
-          sender_id?: number | null
-          thread_id?: number | null
+          sender_id?: string | null
         }
         Update: {
           content?: string | null
+          conversation_id?: number | null
           created_at?: string
           id?: number
           is_read?: boolean | null
-          recipient_id?: number | null
-          sender_id?: number | null
-          thread_id?: number | null
+          sender_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      participants: {
+        Row: {
+          conversation_id: number | null
+          created_at: string
+          id: number
+          user_id: string | null
+        }
+        Insert: {
+          conversation_id?: number | null
+          created_at?: string
+          id?: number
+          user_id?: string | null
+        }
+        Update: {
+          conversation_id?: number | null
+          created_at?: string
+          id?: number
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "participants_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "participants_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
