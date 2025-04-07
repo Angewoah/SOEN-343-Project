@@ -41,11 +41,6 @@ export const Route = createFileRoute("/organization/insights")({
   }
 });
 
-function Filter(props) {
-  return <div
-    className="hover:bg-gray-100 rounded-lg">By {props.name}</div>
-}
-
 function RouteComponent() {
   const eventData = useLoaderData({ from: "/organization/insights" }) ?? [];
   const [sortDropdownVisible, setSortDropdownVisible] = useState(false);

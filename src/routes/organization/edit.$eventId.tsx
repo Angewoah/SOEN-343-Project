@@ -9,8 +9,7 @@ import { ArrowLeftIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { fetchEventById, updateEvent } from "../../modules/event/service";
 import { useEffect, useState } from "react";
 import { Database } from "../../supabase/types";
-import { sendEventPromotionMail } from "../../modules/mail/mailService"
-
+import { sendEventPromotionMail } from "../../modules/mail/mailService";
 
 type Event = Database["public"]["Tables"]["events"]["Row"];
 
@@ -51,18 +50,17 @@ function RouteComponent() {
   async function handleEventUpdate() {
     try {
       await updateEvent(eventIdNum, title, description);
-      
       navigate({ to: "/organization/events/inactive" });
     } catch (error) {
       console.error("Beep", error);
     }
   }
 
-  // Generate the Facebook share link using event title and description directly
+  // Generate the Facebook share link using event title and description
   function generateFacebookShareLink() {
     if (event) {
       const eventUrl = window.location.href; // Current event URL
-      const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(eventUrl)}&url=${encodeURIComponent(event.title + ": " + event.description)}`;
+      const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(eventUrl)}&quote=${encodeURIComponent(event.title + ": " + event.description)}`;
       return facebookUrl;
     }
     return "#"; // Fallback in case event is not loaded yet
@@ -71,7 +69,7 @@ function RouteComponent() {
   // Generate the Twitter share link
   function generateTwitterShareLink() {
     if (event) {
-      const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(event.title + ": " + event.description)}&url=${encodeURIComponent(window.location.href)}`;
+      const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(event.title + ": " + event.description)}&url=${'http://localhost:3001/client/events/'+eventId}`;
       return twitterUrl;
     }
     return "#"; // Fallback in case event is not loaded yet
@@ -174,7 +172,14 @@ function RouteComponent() {
             <button
               type="button"
               className="w-full text-md font-medium bg-purple-500 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition-colors focus:outline-none cursor-pointer"
-              onClick={() => sendEventPromotionMail(title, description, "http://localhost:3001/client/events/" + (eventId), "merouaneissad@gmail.com")} //onazijosh@gmail.com
+              onClick={() =>
+                sendEventPromotionMail(
+                  title,
+                  description,
+                  "http://localhost:3001/client/events/" + eventId,
+                  "merouaneissad@gmail.com" //onazijosh@gmail.com
+                )
+              }
             >
               Send Email
             </button>
