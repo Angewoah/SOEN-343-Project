@@ -31,7 +31,7 @@ export function ClientNavbar() {
           Messages
         </Link>
         <Link
-          to="/organization/events/inactive"
+          to="/organization/events/all"
           className="text-base font-mono hover:text-purple-600"
         >
           Switch to Event Organizer
