@@ -160,7 +160,7 @@ function RouteComponent() {
                     </div>
 
                     <p className="text-sm text-neutral-600 truncate max-w-full">
-                      {conversation.last_message_text || "No messages yet"}
+                      {conversation.title || "No messages yet"}
                     </p>
 
                     <div className="flex items-center mt-2 text-xs text-neutral-500">
