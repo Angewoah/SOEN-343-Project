@@ -214,11 +214,11 @@ function CalendarComponent() {
           opacity: isVisible ? 1 : 0,
           transition: 'transform 0.3s ease, opacity 0.3s ease',
         }}
-        className="bg-blue-50 rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto"
+        className="bg-gradient-to-tl from-blue-400 to-blue-100 rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-start p-4 bg-gradient-to-r from-sky-300 to-indigo-400">
-          <h3 className="text-lg font-semibold text-white">
+        <div className="flex justify-between items-start p-4 ">
+          <h3 className="text-lg font-semibold text-black">
             {selectedEvent.event?.title || "Event Details"}
           </h3>
           <button 
@@ -226,16 +226,16 @@ function CalendarComponent() {
               setIsVisible(false);
               setTimeout(() => setSelectedEvent(null), 300);
             }}
-            className="text-white"
+            className="text-black"
           >
-            <svg className="w-8 h-8 hover:cursor-pointer hover:rounded-4xl hover:bg-indigo-300 p-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-8 h-8 hover:cursor-pointer hover:rounded-4xl hover:bg-blue-200 p-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
         
         
-        <div className="p-4 py-8">
+        <div className="p-4 py-8 bg-blue-50">
           <div className="flex flex-col md:flex-row md:space-x-4">
             {/* Left Column */}
             <div className="md:w-1/2 space-y-4">
