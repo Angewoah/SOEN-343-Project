@@ -47,7 +47,9 @@ function ClientEventsComponent() {
 
   const [events, setEvents] = useState<EventWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
-  const [bookingInProgress, setBookingInProgress] = useState<number | null>(null);
+  const [bookingInProgress, setBookingInProgress] = useState<number | null>(
+    null
+  );
   const matches = useMatches();
   const isEventDetailPage = matches.some(
     (match) => match.routeId === "/client/events/$eventId"
@@ -59,7 +61,7 @@ function ClientEventsComponent() {
 
   // First filter to only include active events
   const activeEvents = useMemo(() => {
-    return events.filter(event => event.status === 'active');
+    return events.filter((event) => event.status === "active");
   }, [events]);
 
   // Then filter out events the user has already booked
@@ -69,20 +71,20 @@ function ClientEventsComponent() {
 
   // Filter events by tag
   const educationalEvents = useMemo(() => {
-    return availableEvents.filter(event => 
-      event.tags?.includes('educational')
+    return availableEvents.filter((event) =>
+      event.tags?.includes("educational")
     );
   }, [availableEvents]);
 
   const entertainmentEvents = useMemo(() => {
-    return availableEvents.filter(event => 
-      event.tags?.includes('entertainment')
+    return availableEvents.filter((event) =>
+      event.tags?.includes("entertainment")
     );
   }, [availableEvents]);
 
   const networkingEvents = useMemo(() => {
-    return availableEvents.filter(event => 
-      event.tags?.includes('networking')
+    return availableEvents.filter((event) =>
+      event.tags?.includes("networking")
     );
   }, [availableEvents]);
 
@@ -141,11 +143,13 @@ function ClientEventsComponent() {
   return (
     <div className="client-events">
       <style>{scrollbarStyle}</style>
-      
+
       <div className="flex justify-between items-center mb-6">
-        <div>
+        <div className="pt-6 pl-6">
           <h1 className="text-2xl font-bold">Discover Events</h1>
-          <p className="text-gray-600">Find and book events that interest you</p>
+          <p className="text-gray-600">
+            Find and book events that interest you
+          </p>
         </div>
 
         {user && (
@@ -166,7 +170,9 @@ function ClientEventsComponent() {
             "No events available at the moment."
           ) : (
             <div>
-              <p className="text-lg mb-2">You've booked all available events!</p>
+              <p className="text-lg mb-2">
+                You've booked all available events!
+              </p>
               <Link
                 to="/client/bookings"
                 className="mt-3 inline-block text-blue-500 hover:text-blue-700 font-medium"
@@ -195,15 +201,19 @@ function ClientEventsComponent() {
                 <div className={`w-1 h-8 bg-red-500 mr-3`}></div>
                 <div>
                   <h2 className="text-9xl font-bold">For You</h2>
-                  <p className="text-sm text-gray-600">Events we think you might like</p>
+                  <p className="text-sm text-gray-600">
+                    Events we think you might like
+                  </p>
                 </div>
               </div>
               <div className="bg-gray-50 rounded-lg p-8 text-center">
-                <p className="text-gray-600">No available events at the moment. Check back soon!</p>
+                <p className="text-gray-600">
+                  No available events at the moment. Check back soon!
+                </p>
               </div>
             </div>
           )}
-          
+
           {/* Educational Events */}
           {educationalEvents.length > 0 ? (
             <EventCarousel
@@ -221,15 +231,19 @@ function ClientEventsComponent() {
                 <div className={`w-1 h-8 bg-blue-500 mr-3`}></div>
                 <div>
                   <h2 className="text-xl font-bold">Educational Events</h2>
-                  <p className="text-sm text-gray-600">Expand your knowledge and skills</p>
+                  <p className="text-sm text-gray-600">
+                    Expand your knowledge and skills
+                  </p>
                 </div>
               </div>
               <div className="bg-gray-50 rounded-lg p-8 text-center">
-                <p className="text-gray-600">No educational events currently available.</p>
+                <p className="text-gray-600">
+                  No educational events currently available.
+                </p>
               </div>
             </div>
           )}
-          
+
           {/* Entertainment Events */}
           {entertainmentEvents.length > 0 ? (
             <EventCarousel
@@ -247,15 +261,19 @@ function ClientEventsComponent() {
                 <div className={`w-1 h-8 bg-purple-500 mr-3`}></div>
                 <div>
                   <h2 className="text-xl font-bold">Entertainment</h2>
-                  <p className="text-sm text-gray-600">Fun and enjoyable experiences</p>
+                  <p className="text-sm text-gray-600">
+                    Fun and enjoyable experiences
+                  </p>
                 </div>
               </div>
               <div className="bg-gray-50 rounded-lg p-8 text-center">
-                <p className="text-gray-600">No entertainment events currently available.</p>
+                <p className="text-gray-600">
+                  No entertainment events currently available.
+                </p>
               </div>
             </div>
           )}
-          
+
           {/* Networking Events */}
           {networkingEvents.length > 0 ? (
             <EventCarousel
@@ -273,11 +291,15 @@ function ClientEventsComponent() {
                 <div className={`w-1 h-8 bg-green-500 mr-3`}></div>
                 <div>
                   <h2 className="text-xl font-bold">Networking</h2>
-                  <p className="text-sm text-gray-600">Connect with others in your field</p>
+                  <p className="text-sm text-gray-600">
+                    Connect with others in your field
+                  </p>
                 </div>
               </div>
               <div className="bg-gray-50 rounded-lg p-8 text-center">
-                <p className="text-gray-600">No networking events currently available.</p>
+                <p className="text-gray-600">
+                  No networking events currently available.
+                </p>
               </div>
             </div>
           )}

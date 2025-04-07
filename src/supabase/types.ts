@@ -79,6 +79,7 @@ export type Database = {
       conversations: {
         Row: {
           created_at: string
+          event_id: number | null
           id: number
           last_message_text: string | null
           last_message_time: string | null
@@ -86,6 +87,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          event_id?: number | null
           id?: number
           last_message_text?: string | null
           last_message_time?: string | null
@@ -93,12 +95,21 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          event_id?: number | null
           id?: number
           last_message_text?: string | null
           last_message_time?: string | null
           title?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "conversations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       events: {
         Row: {
@@ -113,7 +124,6 @@ export type Database = {
           title: string | null
           venue_id: number | null
           venue_timeslot_id: number | null
-          tags: string[] | null
         }
         Insert: {
           created_at?: string
@@ -127,7 +137,6 @@ export type Database = {
           title?: string | null
           venue_id?: number | null
           venue_timeslot_id?: number | null
-          tags: string[] | null
         }
         Update: {
           created_at?: string
@@ -141,7 +150,6 @@ export type Database = {
           title?: string | null
           venue_id?: number | null
           venue_timeslot_id?: number | null
-          tags: string[] | null
         }
         Relationships: [
           {

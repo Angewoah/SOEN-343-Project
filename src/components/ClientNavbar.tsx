@@ -25,6 +25,12 @@ export function ClientNavbar() {
           Calendar
         </Link>
         <Link
+          to="/client/messages"
+          className="text-base font-mono hover:text-purple-600"
+        >
+          Messages
+        </Link>
+        <Link
           to="/organization/events/inactive"
           className="text-base font-mono hover:text-purple-600"
         >
