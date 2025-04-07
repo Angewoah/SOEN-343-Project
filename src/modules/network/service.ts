@@ -159,3 +159,10 @@ export async function fetchUserConversations(user: User) {
       return { error: err };
     }
   }
+
+  export async function setMessageAsRead(messageId: number) {
+    const { error } = await supabase
+        .from("messages")
+        .update({ "is_read": true})
+        .eq("id", messageId);
+  }
