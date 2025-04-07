@@ -63,15 +63,38 @@ function Detail(props) {
 
 function RouteComponent() {
   const eventData = useLoaderData({ from: "/organization/insights" }) ?? [];
+  const [eventArr, setEventArr] = useState(eventData);
   const [sortDropdownVisible, setSortDropdownVisible] = useState(false);
-  const [sortMode, setSortMode] = useState("popularity");
-  const dropdown = ["popularity", "trending"].map((name, index) => {
+  const [sortMode, setSortMode] = useState("name");
+  const dropdown = ["name", "popularity", "trending"].map((name, index) => {
     return <li 
       className="hover:bg-gray-100 rounded-lg" 
       key={index}
       onClick={() => {
         setSortMode(name);
         setSortDropdownVisible(false);
+        switch (name) {
+          case "popularity": {
+            setEventArr(eventData.slice().sort((a, b) => 
+              a?.attendees > b?.attendees ? -1 : 1))
+            break;
+            
+          }
+          case "trending": {
+            setEventArr(eventData.slice().sort((a, b) => 
+              a?.weekBookings > b?.weekBookings ? -1 : 1))
+            break;
+            
+          }
+          case "name": {
+            setEventArr(eventData.slice().sort((a, b) => 
+              a?.title > b?.title ? -1 : 1))
+            break;
+            
+          }
+          
+          default:
+        }
       }}
     >
       By {name}
@@ -107,7 +130,7 @@ function RouteComponent() {
               : ""
             }
           </div>
-          {eventData.map((entry) => {
+          {eventArr.map((entry) => {
             const { 
               event, 
               confirmations, 
@@ -139,6 +162,7 @@ function RouteComponent() {
                     />
                     <WeekBookings bookings={weekBookings}/>
                     <div className="flex flex-col gap-2 w-full max-w-48 ">
+                      {/*Pass over the fetched data with navigate.*/}
                       <Link
                         to="/organization/report/$eventId"
                         params={{ eventId: `${event.id}` }}
