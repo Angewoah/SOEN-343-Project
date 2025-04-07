@@ -234,67 +234,43 @@ function CalendarComponent() {
           </button>
         </div>
         
-        <div className="p-4 space-y-4">
-          <div className="flex items-start">
-            <ClockIcon className="w-5 h-5 mr-3 text-blue-500 flex-shrink-0 mt-0.5" />
-            <div>
-              {selectedEvent.event?.timeslot ? (
-                <p className="font-medium">
-                  {formatBookingDate(selectedEvent.event.timeslot.start_time || "")}
-                </p>
-              ) : (
-                <p className="text-gray-500">Not scheduled</p>
+        
+        <div className="p-4 py-8">
+          <div className="flex flex-col md:flex-row md:space-x-4">
+            {/* Left Column */}
+            <div className="md:w-1/2 space-y-4">
+              <div className="flex items-start">
+                <ClockIcon className="w-5 h-5 mr-3 text-blue-500 flex-shrink-0 mt-0.5" />
+                <div>
+                  {selectedEvent.event?.timeslot ? (
+                    <p className="font-medium">
+                      {formatBookingDate(selectedEvent.event.timeslot.start_time || "")}
+                    </p>
+                  ) : (
+                    <p className="text-gray-500">Not scheduled</p>
+                  )}
+                  <p className="text-sm text-gray-500">
+                    {selectedEvent.event?.duration_minutes} minutes
+                  </p>
+                </div>
+              </div>
+            </div>
+        
+            {/* Right Column */}
+            <div className="md:w-1/2 space-y-4">
+              {selectedEvent.event?.venue && (
+                <div className="flex items-start">
+                  <MapPinIcon className="w-5 h-5 mr-3 text-blue-500 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-medium">{selectedEvent.event.venue.name}</p>
+                    <p className="text-sm text-gray-500">
+                      {selectedEvent.event.venue.address}
+                    </p>
+                  </div>
+                </div>
               )}
-              <p className="text-sm text-gray-500">
-                {selectedEvent.event?.duration_minutes} minutes
-              </p>
             </div>
           </div>
-
-          {selectedEvent.event?.venue && (
-            <div className="flex items-start">
-              <MapPinIcon className="w-5 h-5 mr-3 text-blue-500 flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="font-medium">{selectedEvent.event.venue.name}</p>
-                <p className="text-sm text-gray-500">
-                  {selectedEvent.event.venue.address}
-                </p>
-              </div>
-            </div>
-          )}
-
-          {selectedEvent.event?.description && (
-            <div className="mt-3">
-              <h4 className="text-sm font-medium text-gray-700 mb-1">Description</h4>
-              <p className="text-gray-600">
-                {selectedEvent.event.description}
-              </p>
-            </div>
-          )}
-
-          {selectedEvent.event?.tags && Array.isArray(selectedEvent.event.tags) && selectedEvent.event.tags.length > 0 && (
-            <div className="mt-3">
-              <h4 className="text-sm font-medium text-gray-700 mb-1">Tags</h4>
-              <div className="flex flex-wrap gap-1">
-                {selectedEvent.event.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className={`text-xs px-2 py-1 rounded-full font-medium ${
-                      tag === "educational"
-                        ? "bg-blue-100 text-blue-700"
-                        : tag === "entertainment"
-                        ? "bg-purple-100 text-purple-700"
-                        : tag === "networking"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-gray-100 text-gray-700"
-                    }`}
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
         
       </div>
