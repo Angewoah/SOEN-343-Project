@@ -5,6 +5,7 @@ import {
   useParams,
 } from "@tanstack/react-router";
 import { OrgNavbar } from "../../components/OrgNavbar";
+import { ProgressSteps } from "../../components/ProgressSteps";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { ArrowLeftIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
@@ -39,6 +40,11 @@ const CreateEventSchema = z.object({
 export const Route = createFileRoute("/organization/complete-event/$eventId")({
   component: CompleteEventPage,
 });
+
+const steps = [
+  { name: "Basic Info", description: "Create your event" },
+  { name: "Complete Setup", description: "Add speakers & schedule" },
+];
 
 function CompleteEventPage() {
   const { user, isLoading, signOut } = useUser();
@@ -421,6 +427,14 @@ function CompleteEventPage() {
         </Link>
         <h1 className="text-lg font-mono ml-4 mr-2">Complete Event</h1> -{" "}
         <h1 className="text-lg font-mono ml-2">{event?.title}</h1>
+      </div>
+
+      <div className="w-full">
+        <ProgressSteps 
+          currentStep={2} 
+          totalSteps={2} 
+          steps={steps} 
+        />
       </div>
 
       <div className="w-full max-w-1/4 py-16">

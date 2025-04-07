@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { OrgNavbar } from "../../components/OrgNavbar";
+import { ProgressSteps } from "../../components/ProgressSteps";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { XMarkIcon } from "@heroicons/react/24/solid";
@@ -19,6 +20,11 @@ type Venue = {
   capacity: number | null;
   address: string | null;
 };
+
+const steps = [
+  { name: "Basic Info", description: "Create your event" },
+  { name: "Complete Setup", description: "Add speakers & schedule" },
+];
 
 const CreateEventSchema = z.object({
   title: z.string().min(3, { message: "Title must be at least 3 characters" }),
@@ -148,10 +154,10 @@ function CreateEventsPage() {
     }
   };
 
-  const onSubmit = (data: CreateEventFormData) => {
+  const onSubmit = async (data: CreateEventFormData) => {
     if (!user) return;
     try {
-      createEvent(
+      const eventId = await createEvent(
         user?.id,
         data.title,
         data.description,
@@ -163,7 +169,7 @@ function CreateEventsPage() {
       reset();
       setSelectedTags([]);
       console.log("Event created successfully", data);
-      navigate({ to: "/organization/events/inactive" });
+      navigate({ to: `/organization/complete-event/${eventId}` });
     } catch (error) {
       console.error("Failed to create event", error);
     }
@@ -181,7 +187,15 @@ function CreateEventsPage() {
         <h1 className="text-lg font-mono ml-4">Create New Event</h1>
       </div>
 
-      <div className="w-full max-w-1/4 py-16">
+      <div className="w-full">
+      <ProgressSteps 
+        currentStep={1} 
+        totalSteps={2} 
+        steps={steps} 
+      />
+    </div>
+
+      <div className="max-w-1/3 py-16">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="flex flex-col gap-y-16">
             <div>
