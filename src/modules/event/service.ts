@@ -79,7 +79,7 @@ export async function createEvent(
         duration_minutes: durationMinutes,
         max_attendees: maxAttendees,
         status: 'inactive',
-        tags, // Add the tags field here
+        tags: tags.join(','), 
       })
       .select()
       .single();

@@ -288,7 +288,7 @@ function CreateEventsPage() {
                     key={tag}
                     type="button" 
                     onClick={() => toggleTag(tag)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${getTagColor(tag)}`}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:cursor-pointer ${getTagColor(tag)}`}
                   >
                     {tag}
                   </button>
