@@ -22,6 +22,7 @@ import { Route as OrganizationInsightsImport } from './routes/organization/insig
 import { Route as OrganizationEventsImport } from './routes/organization/events'
 import { Route as OrganizationDashboardImport } from './routes/organization/dashboard'
 import { Route as OrganizationCreateEventImport } from './routes/organization/create-event'
+import { Route as ClientMessagesImport } from './routes/client/messages'
 import { Route as ClientEventsImport } from './routes/client/events'
 import { Route as ClientCalendarImport } from './routes/client/calendar'
 import { Route as ClientBookingsImport } from './routes/client/bookings'
@@ -34,6 +35,7 @@ import { Route as OrganizationEventsInactiveImport } from './routes/organization
 import { Route as OrganizationEventsAllImport } from './routes/organization/events.all'
 import { Route as OrganizationEditEventIdImport } from './routes/organization/edit.$eventId'
 import { Route as OrganizationCompleteEventEventIdImport } from './routes/organization/complete-event.$eventId'
+import { Route as ClientMessagesConversationIdImport } from './routes/client/messages.$conversationId'
 import { Route as ClientEventsEventIdImport } from './routes/client/events.$eventId'
 
 // Create/Update Routes
@@ -102,6 +104,12 @@ const OrganizationCreateEventRoute = OrganizationCreateEventImport.update({
   id: '/create-event',
   path: '/create-event',
   getParentRoute: () => OrganizationRouteRoute,
+} as any)
+
+const ClientMessagesRoute = ClientMessagesImport.update({
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => ClientRouteRoute,
 } as any)
 
 const ClientEventsRoute = ClientEventsImport.update({
@@ -181,6 +189,13 @@ const OrganizationCompleteEventEventIdRoute =
     getParentRoute: () => OrganizationRouteRoute,
   } as any)
 
+const ClientMessagesConversationIdRoute =
+  ClientMessagesConversationIdImport.update({
+    id: '/$conversationId',
+    path: '/$conversationId',
+    getParentRoute: () => ClientMessagesRoute,
+  } as any)
+
 const ClientEventsEventIdRoute = ClientEventsEventIdImport.update({
   id: '/$eventId',
   path: '/$eventId',
@@ -247,6 +262,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClientEventsImport
       parentRoute: typeof ClientRouteImport
     }
+    '/client/messages': {
+      id: '/client/messages'
+      path: '/messages'
+      fullPath: '/client/messages'
+      preLoaderRoute: typeof ClientMessagesImport
+      parentRoute: typeof ClientRouteImport
+    }
     '/organization/create-event': {
       id: '/organization/create-event'
       path: '/create-event'
@@ -309,6 +331,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/client/events/$eventId'
       preLoaderRoute: typeof ClientEventsEventIdImport
       parentRoute: typeof ClientEventsImport
+    }
+    '/client/messages/$conversationId': {
+      id: '/client/messages/$conversationId'
+      path: '/$conversationId'
+      fullPath: '/client/messages/$conversationId'
+      preLoaderRoute: typeof ClientMessagesConversationIdImport
+      parentRoute: typeof ClientMessagesImport
     }
     '/organization/complete-event/$eventId': {
       id: '/organization/complete-event/$eventId'
@@ -376,16 +405,30 @@ const ClientEventsRouteWithChildren = ClientEventsRoute._addFileChildren(
   ClientEventsRouteChildren,
 )
 
+interface ClientMessagesRouteChildren {
+  ClientMessagesConversationIdRoute: typeof ClientMessagesConversationIdRoute
+}
+
+const ClientMessagesRouteChildren: ClientMessagesRouteChildren = {
+  ClientMessagesConversationIdRoute: ClientMessagesConversationIdRoute,
+}
+
+const ClientMessagesRouteWithChildren = ClientMessagesRoute._addFileChildren(
+  ClientMessagesRouteChildren,
+)
+
 interface ClientRouteRouteChildren {
   ClientBookingsRoute: typeof ClientBookingsRoute
   ClientCalendarRoute: typeof ClientCalendarRoute
   ClientEventsRoute: typeof ClientEventsRouteWithChildren
+  ClientMessagesRoute: typeof ClientMessagesRouteWithChildren
 }
 
 const ClientRouteRouteChildren: ClientRouteRouteChildren = {
   ClientBookingsRoute: ClientBookingsRoute,
   ClientCalendarRoute: ClientCalendarRoute,
   ClientEventsRoute: ClientEventsRouteWithChildren,
+  ClientMessagesRoute: ClientMessagesRouteWithChildren,
 }
 
 const ClientRouteRouteWithChildren = ClientRouteRoute._addFileChildren(
@@ -469,6 +512,7 @@ export interface FileRoutesByFullPath {
   '/client/bookings': typeof ClientBookingsRoute
   '/client/calendar': typeof ClientCalendarRoute
   '/client/events': typeof ClientEventsRouteWithChildren
+  '/client/messages': typeof ClientMessagesRouteWithChildren
   '/organization/create-event': typeof OrganizationCreateEventRoute
   '/organization/dashboard': typeof OrganizationDashboardRoute
   '/organization/events': typeof OrganizationEventsRouteWithChildren
@@ -478,6 +522,7 @@ export interface FileRoutesByFullPath {
   '/organization/payment': typeof OrganizationPaymentRoute
   '/organization/settings': typeof OrganizationSettingsRouteWithChildren
   '/client/events/$eventId': typeof ClientEventsEventIdRoute
+  '/client/messages/$conversationId': typeof ClientMessagesConversationIdRoute
   '/organization/complete-event/$eventId': typeof OrganizationCompleteEventEventIdRoute
   '/organization/edit/$eventId': typeof OrganizationEditEventIdRoute
   '/organization/events/all': typeof OrganizationEventsAllRoute
@@ -496,6 +541,7 @@ export interface FileRoutesByTo {
   '/client/bookings': typeof ClientBookingsRoute
   '/client/calendar': typeof ClientCalendarRoute
   '/client/events': typeof ClientEventsRouteWithChildren
+  '/client/messages': typeof ClientMessagesRouteWithChildren
   '/organization/create-event': typeof OrganizationCreateEventRoute
   '/organization/dashboard': typeof OrganizationDashboardRoute
   '/organization/events': typeof OrganizationEventsRouteWithChildren
@@ -505,6 +551,7 @@ export interface FileRoutesByTo {
   '/organization/payment': typeof OrganizationPaymentRoute
   '/organization/settings': typeof OrganizationSettingsRouteWithChildren
   '/client/events/$eventId': typeof ClientEventsEventIdRoute
+  '/client/messages/$conversationId': typeof ClientMessagesConversationIdRoute
   '/organization/complete-event/$eventId': typeof OrganizationCompleteEventEventIdRoute
   '/organization/edit/$eventId': typeof OrganizationEditEventIdRoute
   '/organization/events/all': typeof OrganizationEventsAllRoute
@@ -524,6 +571,7 @@ export interface FileRoutesById {
   '/client/bookings': typeof ClientBookingsRoute
   '/client/calendar': typeof ClientCalendarRoute
   '/client/events': typeof ClientEventsRouteWithChildren
+  '/client/messages': typeof ClientMessagesRouteWithChildren
   '/organization/create-event': typeof OrganizationCreateEventRoute
   '/organization/dashboard': typeof OrganizationDashboardRoute
   '/organization/events': typeof OrganizationEventsRouteWithChildren
@@ -533,6 +581,7 @@ export interface FileRoutesById {
   '/organization/payment': typeof OrganizationPaymentRoute
   '/organization/settings': typeof OrganizationSettingsRouteWithChildren
   '/client/events/$eventId': typeof ClientEventsEventIdRoute
+  '/client/messages/$conversationId': typeof ClientMessagesConversationIdRoute
   '/organization/complete-event/$eventId': typeof OrganizationCompleteEventEventIdRoute
   '/organization/edit/$eventId': typeof OrganizationEditEventIdRoute
   '/organization/events/all': typeof OrganizationEventsAllRoute
@@ -553,6 +602,7 @@ export interface FileRouteTypes {
     | '/client/bookings'
     | '/client/calendar'
     | '/client/events'
+    | '/client/messages'
     | '/organization/create-event'
     | '/organization/dashboard'
     | '/organization/events'
@@ -562,6 +612,7 @@ export interface FileRouteTypes {
     | '/organization/payment'
     | '/organization/settings'
     | '/client/events/$eventId'
+    | '/client/messages/$conversationId'
     | '/organization/complete-event/$eventId'
     | '/organization/edit/$eventId'
     | '/organization/events/all'
@@ -579,6 +630,7 @@ export interface FileRouteTypes {
     | '/client/bookings'
     | '/client/calendar'
     | '/client/events'
+    | '/client/messages'
     | '/organization/create-event'
     | '/organization/dashboard'
     | '/organization/events'
@@ -588,6 +640,7 @@ export interface FileRouteTypes {
     | '/organization/payment'
     | '/organization/settings'
     | '/client/events/$eventId'
+    | '/client/messages/$conversationId'
     | '/organization/complete-event/$eventId'
     | '/organization/edit/$eventId'
     | '/organization/events/all'
@@ -605,6 +658,7 @@ export interface FileRouteTypes {
     | '/client/bookings'
     | '/client/calendar'
     | '/client/events'
+    | '/client/messages'
     | '/organization/create-event'
     | '/organization/dashboard'
     | '/organization/events'
@@ -614,6 +668,7 @@ export interface FileRouteTypes {
     | '/organization/payment'
     | '/organization/settings'
     | '/client/events/$eventId'
+    | '/client/messages/$conversationId'
     | '/organization/complete-event/$eventId'
     | '/organization/edit/$eventId'
     | '/organization/events/all'
@@ -665,7 +720,8 @@ export const routeTree = rootRoute
       "children": [
         "/client/bookings",
         "/client/calendar",
-        "/client/events"
+        "/client/events",
+        "/client/messages"
       ]
     },
     "/organization": {
@@ -703,6 +759,13 @@ export const routeTree = rootRoute
       "parent": "/client",
       "children": [
         "/client/events/$eventId"
+      ]
+    },
+    "/client/messages": {
+      "filePath": "client/messages.tsx",
+      "parent": "/client",
+      "children": [
+        "/client/messages/$conversationId"
       ]
     },
     "/organization/create-event": {
@@ -750,6 +813,10 @@ export const routeTree = rootRoute
     "/client/events/$eventId": {
       "filePath": "client/events.$eventId.tsx",
       "parent": "/client/events"
+    },
+    "/client/messages/$conversationId": {
+      "filePath": "client/messages.$conversationId.tsx",
+      "parent": "/client/messages"
     },
     "/organization/complete-event/$eventId": {
       "filePath": "organization/complete-event.$eventId.tsx",
