@@ -22,10 +22,12 @@ import { Route as OrganizationInsightsImport } from './routes/organization/insig
 import { Route as OrganizationEventsImport } from './routes/organization/events'
 import { Route as OrganizationDashboardImport } from './routes/organization/dashboard'
 import { Route as OrganizationCreateEventImport } from './routes/organization/create-event'
+import { Route as ClientPaymentImport } from './routes/client/payment'
 import { Route as ClientMessagesImport } from './routes/client/messages'
 import { Route as ClientEventsImport } from './routes/client/events'
 import { Route as ClientCalendarImport } from './routes/client/calendar'
 import { Route as ClientBookingsImport } from './routes/client/bookings'
+import { Route as ClientPaymentConfirmationImport } from './routes/client/PaymentConfirmation'
 import { Route as authRegisterImport } from './routes/(auth)/register'
 import { Route as authLoginImport } from './routes/(auth)/login'
 import { Route as OrganizationSettingsUserImport } from './routes/organization/settings.user'
@@ -107,6 +109,12 @@ const OrganizationCreateEventRoute = OrganizationCreateEventImport.update({
   getParentRoute: () => OrganizationRouteRoute,
 } as any)
 
+const ClientPaymentRoute = ClientPaymentImport.update({
+  id: '/payment',
+  path: '/payment',
+  getParentRoute: () => ClientRouteRoute,
+} as any)
+
 const ClientMessagesRoute = ClientMessagesImport.update({
   id: '/messages',
   path: '/messages',
@@ -128,6 +136,12 @@ const ClientCalendarRoute = ClientCalendarImport.update({
 const ClientBookingsRoute = ClientBookingsImport.update({
   id: '/bookings',
   path: '/bookings',
+  getParentRoute: () => ClientRouteRoute,
+} as any)
+
+const ClientPaymentConfirmationRoute = ClientPaymentConfirmationImport.update({
+  id: '/PaymentConfirmation',
+  path: '/PaymentConfirmation',
   getParentRoute: () => ClientRouteRoute,
 } as any)
 
@@ -248,6 +262,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authRegisterImport
       parentRoute: typeof rootRoute
     }
+    '/client/PaymentConfirmation': {
+      id: '/client/PaymentConfirmation'
+      path: '/PaymentConfirmation'
+      fullPath: '/client/PaymentConfirmation'
+      preLoaderRoute: typeof ClientPaymentConfirmationImport
+      parentRoute: typeof ClientRouteImport
+    }
     '/client/bookings': {
       id: '/client/bookings'
       path: '/bookings'
@@ -274,6 +295,13 @@ declare module '@tanstack/react-router' {
       path: '/messages'
       fullPath: '/client/messages'
       preLoaderRoute: typeof ClientMessagesImport
+      parentRoute: typeof ClientRouteImport
+    }
+    '/client/payment': {
+      id: '/client/payment'
+      path: '/payment'
+      fullPath: '/client/payment'
+      preLoaderRoute: typeof ClientPaymentImport
       parentRoute: typeof ClientRouteImport
     }
     '/organization/create-event': {
@@ -432,17 +460,21 @@ const ClientMessagesRouteWithChildren = ClientMessagesRoute._addFileChildren(
 )
 
 interface ClientRouteRouteChildren {
+  ClientPaymentConfirmationRoute: typeof ClientPaymentConfirmationRoute
   ClientBookingsRoute: typeof ClientBookingsRoute
   ClientCalendarRoute: typeof ClientCalendarRoute
   ClientEventsRoute: typeof ClientEventsRouteWithChildren
   ClientMessagesRoute: typeof ClientMessagesRouteWithChildren
+  ClientPaymentRoute: typeof ClientPaymentRoute
 }
 
 const ClientRouteRouteChildren: ClientRouteRouteChildren = {
+  ClientPaymentConfirmationRoute: ClientPaymentConfirmationRoute,
   ClientBookingsRoute: ClientBookingsRoute,
   ClientCalendarRoute: ClientCalendarRoute,
   ClientEventsRoute: ClientEventsRouteWithChildren,
   ClientMessagesRoute: ClientMessagesRouteWithChildren,
+  ClientPaymentRoute: ClientPaymentRoute,
 }
 
 const ClientRouteRouteWithChildren = ClientRouteRoute._addFileChildren(
@@ -525,10 +557,12 @@ export interface FileRoutesByFullPath {
   '/organization': typeof OrganizationRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
+  '/client/PaymentConfirmation': typeof ClientPaymentConfirmationRoute
   '/client/bookings': typeof ClientBookingsRoute
   '/client/calendar': typeof ClientCalendarRoute
   '/client/events': typeof ClientEventsRouteWithChildren
   '/client/messages': typeof ClientMessagesRouteWithChildren
+  '/client/payment': typeof ClientPaymentRoute
   '/organization/create-event': typeof OrganizationCreateEventRoute
   '/organization/dashboard': typeof OrganizationDashboardRoute
   '/organization/events': typeof OrganizationEventsRouteWithChildren
@@ -555,10 +589,12 @@ export interface FileRoutesByTo {
   '/organization': typeof OrganizationRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
+  '/client/PaymentConfirmation': typeof ClientPaymentConfirmationRoute
   '/client/bookings': typeof ClientBookingsRoute
   '/client/calendar': typeof ClientCalendarRoute
   '/client/events': typeof ClientEventsRouteWithChildren
   '/client/messages': typeof ClientMessagesRouteWithChildren
+  '/client/payment': typeof ClientPaymentRoute
   '/organization/create-event': typeof OrganizationCreateEventRoute
   '/organization/dashboard': typeof OrganizationDashboardRoute
   '/organization/events': typeof OrganizationEventsRouteWithChildren
@@ -586,10 +622,12 @@ export interface FileRoutesById {
   '/organization': typeof OrganizationRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/register': typeof authRegisterRoute
+  '/client/PaymentConfirmation': typeof ClientPaymentConfirmationRoute
   '/client/bookings': typeof ClientBookingsRoute
   '/client/calendar': typeof ClientCalendarRoute
   '/client/events': typeof ClientEventsRouteWithChildren
   '/client/messages': typeof ClientMessagesRouteWithChildren
+  '/client/payment': typeof ClientPaymentRoute
   '/organization/create-event': typeof OrganizationCreateEventRoute
   '/organization/dashboard': typeof OrganizationDashboardRoute
   '/organization/events': typeof OrganizationEventsRouteWithChildren
@@ -618,10 +656,12 @@ export interface FileRouteTypes {
     | '/organization'
     | '/login'
     | '/register'
+    | '/client/PaymentConfirmation'
     | '/client/bookings'
     | '/client/calendar'
     | '/client/events'
     | '/client/messages'
+    | '/client/payment'
     | '/organization/create-event'
     | '/organization/dashboard'
     | '/organization/events'
@@ -647,10 +687,12 @@ export interface FileRouteTypes {
     | '/organization'
     | '/login'
     | '/register'
+    | '/client/PaymentConfirmation'
     | '/client/bookings'
     | '/client/calendar'
     | '/client/events'
     | '/client/messages'
+    | '/client/payment'
     | '/organization/create-event'
     | '/organization/dashboard'
     | '/organization/events'
@@ -676,10 +718,12 @@ export interface FileRouteTypes {
     | '/organization'
     | '/(auth)/login'
     | '/(auth)/register'
+    | '/client/PaymentConfirmation'
     | '/client/bookings'
     | '/client/calendar'
     | '/client/events'
     | '/client/messages'
+    | '/client/payment'
     | '/organization/create-event'
     | '/organization/dashboard'
     | '/organization/events'
@@ -740,10 +784,12 @@ export const routeTree = rootRoute
     "/client": {
       "filePath": "client/route.tsx",
       "children": [
+        "/client/PaymentConfirmation",
         "/client/bookings",
         "/client/calendar",
         "/client/events",
-        "/client/messages"
+        "/client/messages",
+        "/client/payment"
       ]
     },
     "/organization": {
@@ -769,6 +815,10 @@ export const routeTree = rootRoute
     "/(auth)/register": {
       "filePath": "(auth)/register.tsx"
     },
+    "/client/PaymentConfirmation": {
+      "filePath": "client/PaymentConfirmation.tsx",
+      "parent": "/client"
+    },
     "/client/bookings": {
       "filePath": "client/bookings.tsx",
       "parent": "/client"
@@ -790,6 +840,10 @@ export const routeTree = rootRoute
       "children": [
         "/client/messages/$conversationId"
       ]
+    },
+    "/client/payment": {
+      "filePath": "client/payment.tsx",
+      "parent": "/client"
     },
     "/organization/create-event": {
       "filePath": "organization/create-event.tsx",
