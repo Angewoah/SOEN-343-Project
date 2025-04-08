@@ -38,7 +38,8 @@ export const Route = createFileRoute("/organization/insights")({
         booking.registration_status === "confirmed");
       const attendeeData = bookingData.filter((booking) => 
         booking.type === "attendee");
-      const lastWeek = (new Date()).getDate() - 7;
+      const lastWeek = new Date();
+      lastWeek.setDate(lastWeek.getDate() - 6); // include today
       const weekBookings = bookingData.filter((booking) =>
         new Date(booking.created_at) > lastWeek).length;
       return {
@@ -124,7 +125,7 @@ function RouteComponent() {
             }}
           >
             { sortDropdownVisible ? 
-              <ul className="border-2 rounded-lg border-neutral-300">
+              <ul className="border-2 rounded-lg border-neutral-300 absolute bg-white z-50 w-32">
                 {dropdown}
               </ul>
               : ""
@@ -144,24 +145,26 @@ function RouteComponent() {
                 key={event.id}
                 className="border-2 border-neutral-300 rounded-lg my-4 p-2"
               >
-                <h2 className="text-lg font-semibold">{event.title}</h2>
-                <div className="place-content-between gap-4 flex flex-row">
-                  <div>
-                    <StatDisplay 
-                      text={`Attendees: ${attendees}/${event.max_attendees}`}
-                      icon={UserGroupIcon}
-                    />
-                    <StatDisplay 
-                      text={bookings > 0 ? `Confirmations: ${confirmations}/${bookings} booking${bookings === 1 ? "" : "s"}`
-                      : "No bookings so far"}
-                      icon={ClipboardIcon}
-                    />
-                    <StatDisplay 
-                      text={`Status: ${event.status}`}
-                      icon={ExclamationCircleIcon}
-                    />
-                    <WeekBookings bookings={weekBookings}/>
-                    <div className="flex flex-col gap-2 w-full max-w-48 ">
+                <h2 className="text-lg font-semibold pb-2">{event.title}</h2>
+                <div className="place-content-between gap-4 flex flex-row justify-center">
+                  <div className="flex flex-col justify-between items-center pb-4">
+                    <div className="py-4">
+                      <StatDisplay 
+                        text={`Attendees: ${attendees}/${event.max_attendees}`}
+                        icon={UserGroupIcon}
+                      />
+                      <StatDisplay 
+                        text={bookings > 0 ? `Confirmations: ${confirmations}/${bookings} booking${bookings === 1 ? "" : "s"}`
+                        : "No bookings so far"}
+                        icon={ClipboardIcon}
+                      />
+                      <StatDisplay 
+                        text={`Status: ${event.status}`}
+                        icon={ExclamationCircleIcon}
+                      />
+                      <WeekBookings bookings={weekBookings}/>
+                    </div>
+                    <div>
                       {/*Pass over the fetched data with navigate.*/}
                       <Link
                         to="/organization/report/$eventId"
@@ -172,7 +175,11 @@ function RouteComponent() {
                       </Link>
                     </div>
                   </div>
-                  <Graph event={event}/>
+                  <Graph 
+                    event={event} 
+                    bookingData={bookingData}
+                    className="w-full"
+                  />
                 </div>
               </div>
             );
