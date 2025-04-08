@@ -86,7 +86,7 @@ const EventCard = ({ event, isBooking, onBookClick, formatDate }: EventCardProps
       </Link>
 
       <button
-        className="flex-1 bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition-colors disabled:bg-blue-300 disabled:cursor-not-allowed"
+        className="flex-1 bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition-colors disabled:bg-blue-300 disabled:cursor-not-allowed hover:cursor-pointer"
         disabled={isBooking}
         onClick={onBookClick}
       >
