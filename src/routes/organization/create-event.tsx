@@ -3,7 +3,14 @@ import { OrgNavbar } from "../../components/OrgNavbar";
 import { ProgressSteps } from "../../components/ProgressSteps";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
-import { XMarkIcon } from "@heroicons/react/24/solid";
+import { 
+  XMarkIcon, 
+  UserIcon, 
+  InformationCircleIcon, 
+  ClockIcon, 
+  TagIcon
+} from "@heroicons/react/24/solid";
+import { EnvelopeIcon } from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createEvent } from "../../modules/event/service";
 import { useUser } from "../../hooks/useUser";
@@ -179,7 +186,7 @@ function CreateEventsPage() {
     <div className="w-full flex flex-col items-center">
       <div className="h-20 w-full flex bg-white items-center rounded-t-4xl border-b-1 border-b-neutral-200">
         <Link
-          to="/organization/events/inactive"
+          to="/organization/events/all"
           className="px-4 cursor-pointer border-r-1 border-r-neutral-900"
         >
           <XMarkIcon className="w-6 h-6" />
@@ -194,127 +201,192 @@ function CreateEventsPage() {
         steps={steps} 
       />
     </div>
-
-      <div className="max-w-1/3 py-16">
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="flex flex-col gap-y-16">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-700">Organizer</h2>
-              <h2 className="text-sm mt-2 font-medium text-gray-700">
-                {profile?.first_name} {profile?.last_name}
+      
+      <div className="max-w-3xl w-full pb-16 pt-8">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+          <div className="flex flex-col gap-y-8">
+            {/* Organizer Section */}
+            <div className="bg-purple-50 p-6 rounded-md shadow-lg border border-gray-100">
+              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                <span className="bg-purple-100 text-purple-700 w-8 h-8 rounded-full inline-flex items-center justify-center mr-3">
+                  <UserIcon className="h-5 w-5" />
+                </span>
+                Organizer Information
               </h2>
-            </div>
-            <div>
-              <label
-                htmlFor="title"
-                className="block text-2xl font-bold text-gray-700"
-              >
-                Event Title
-              </label>
-              <input
-                id="title"
-                type="text"
-                {...register("title")}
-                className="mt-2 p-1 block w-full rounded-md border border-neutral-300 shadow-sm  focus:outline-blue-300"
-              />
-              {errors.title && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.title.message}
-                </p>
-              )}
-            </div>
+              <div className="ml-11">
+                <h3 className="text-md font-medium text-gray-700">
+                  Name: {profile?.first_name} {profile?.last_name}
+                </h3>
+                <div className="flex items-center mt-1 text-sm text-gray-700">
+                  <EnvelopeIcon className="h-4 w-4 mr-1" />
+                  <span>{user?.email}</span>
+                </div>
+                
+                <div className="flex items-center mt-4 text-sm text-gray-500">
+                  <div className="relative">
+                    <InformationCircleIcon className="h-4 w-4 text-gray-400 mr-2" />
 
-            <div>
-              <label
-                htmlFor="description"
-                className="block text-2xl font-bold text-gray-700"
-              >
-                Event Description
-              </label>
-              <textarea
-                id="description"
-                {...register("description")}
-                className="mt-2 p-1 block w-full rounded-md border border-neutral-300 shadow-sm  focus:outline-blue-300"
-                rows={4}
-              />
-              {errors.description && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.description.message}
-                </p>
-              )}
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label
-                  htmlFor="duration"
-                  className="block text-2xl font-bold text-gray-700"
-                >
-                  Duration (minutes)
-                </label>
-                <input
-                  id="duration"
-                  type="number"
-                  {...register("duration", { valueAsNumber: true })}
-                  className="mt-2 p-1 block w-full rounded-md border border-neutral-300 shadow-sm  focus:outline-blue-300"
-                />
-                {errors.duration && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.duration.message}
+                  </div>
+                  <p className="mr-1">
+                    This information will be visible to attendees
                   </p>
-                )}
-              </div>
-
-              <div>
-                <label
-                  htmlFor="maxAttendees"
-                  className="block text-2xl font-bold text-gray-700"
-                >
-                  Max Attendees
-                </label>
-                <input
-                  id="maxAttendees"
-                  type="number"
-                  {...register("maxAttendees", { valueAsNumber: true })}
-                  className="mt-2 p-1 block w-full rounded-md border border-neutral-300 shadow-sm  focus:outline-blue-300"
-                />
-                {errors.maxAttendees && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.maxAttendees.message}
-                  </p>
-                )}
+                </div>
               </div>
             </div>
-
-            {/* Add tag selection section */}
-            <div>
-              <label
-                className="block text-2xl font-bold text-gray-700"
-              >
-                Event Tags
-              </label>
-              <p className="mt-2 text-sm text-gray-500 mb-3">
-                Select all tags that apply to your event. Tags help attendees find events they're interested in.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {AVAILABLE_TAGS.map(tag => (
-                  <button
-                    key={tag}
-                    type="button" 
-                    onClick={() => toggleTag(tag)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:cursor-pointer ${getTagColor(tag)}`}
+      
+            {/* Basic Event Details Section */}
+            <div className="bg-purple-50 p-6 rounded-md shadow-lg border border-gray-100">
+              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                <span className="bg-blue-100 text-blue-700 w-8 h-8 rounded-full inline-flex items-center justify-center mr-3">
+                  <InformationCircleIcon className="h-5 w-5" />
+                </span>
+                Basic Event Details
+              </h2>
+              <div className="space-y-6 ml-11">
+                <div>
+                  <label
+                    htmlFor="title"
+                    className="block text-md font-medium text-gray-700"
                   >
-                    {tag}
-                  </button>
-                ))}
+                    Event Title
+                  </label>
+                  <input
+                    id="title"
+                    type="text"
+                    placeholder="Insert Title"
+                    {...register("title")}
+                    className="mt-1 p-2 block w-full rounded-md border border-neutral-300 shadow-sm focus:outline-purple-300 bg-white"
+                  />
+                  {errors.title && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors.title.message}
+                    </p>
+                  )}
+                </div>
+      
+                <div>
+                  <label
+                    htmlFor="description"
+                    className="block text-md font-medium text-gray-700"
+                  >
+                    Event Description
+                  </label>
+                  <textarea
+                    id="description"
+                    placeholder="Insert Description"
+                    {...register("description")}
+                    className="mt-1 p-2 block w-full rounded-md border border-neutral-300 shadow-sm focus:outline-purple-300 bg-white"
+                    rows={4}
+                  />
+                  {errors.description && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors.description.message}
+                    </p>
+                  )}
+                </div>
               </div>
-              
             </div>
+      
+            {/* Time & Capacity Section */}
+            <div className="bg-purple-50 p-6 rounded-lg shadow-lg border border-gray-100">
+              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                <span className="bg-green-100 text-green-700 w-8 h-8 rounded-full inline-flex items-center justify-center mr-3">
+                  <ClockIcon className="h-5 w-5" />
+                </span>
+                Time &amp; Capacity
+              </h2>
+              <div className="space-y-6 ml-11">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label
+                      htmlFor="duration"
+                      className="block text-md font-medium text-gray-700"
+                    >
+                      Duration (minutes)
+                    </label>
+                    <input
+                      id="duration"
+                      type="number"
+                      placeholder="Insert Number"
+                      {...register("duration", { valueAsNumber: true })}
+                      className="mt-1 p-2 block w-full rounded-md border border-neutral-300 shadow-sm focus:outline-purple-300 bg-white"
+                    />
+                    {errors.duration && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors.duration.message}
+                      </p>
+                    )}
+                  </div>
+      
+                  <div>
+                    <label
+                      htmlFor="maxAttendees"
+                      className="block text-md font-medium text-gray-700"
+                    >
+                      Max Attendees
+                    </label>
+                    <input
+                      id="maxAttendees"
+                      type="number"
+                      placeholder="Insert Number"
+                      {...register("maxAttendees", { valueAsNumber: true })}
+                      className="mt-1 p-2 block w-full rounded-md border border-neutral-300 shadow-sm focus:outline-purple-300 bg-white"
+                    />
+                    {errors.maxAttendees && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors.maxAttendees.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+      
+            {/* Categorization Section */}
+            <div className="bg-purple-50 p-6 rounded-lg shadow-lg border border-gray-100">
+              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                <span className="bg-yellow-100 text-yellow-700 w-8 h-8 rounded-full inline-flex items-center justify-center mr-3">
+                  <TagIcon className="h-5 w-5" />
 
-            <div>
+                </span>
+                Event Categorization
+              </h2>
+              <div className="ml-11">
+                <label
+                  className="block text-md font-medium text-gray-700 mb-2"
+                >
+                  Event Tags
+                </label>
+                <p className="text-sm text-gray-500 mb-3">
+                  Select all tags that apply to your event. Tags help attendees find events they're interested in.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {AVAILABLE_TAGS.map(tag => (
+                    <button
+                      key={tag}
+                      type="button" 
+                      onClick={() => toggleTag(tag)}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:cursor-pointer ${getTagColor(tag)}`}
+                    >
+                      {tag}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+      
+            {/* Submit Button Section */}
+            <div className="flex flex-col sm:flex-row justify-end gap-4 mt-4">
+              <button
+                type="button"
+                onClick={() => navigate({ to: "/organization/events/all" })}
+                className="order-2 sm:order-1 py-2 px-4 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+              >
+                Cancel
+              </button>
               <button
                 type="submit"
-                className="w-full text-md font-medium bg-purple-500 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition-colors focus:outline-none cursor-pointer"
+                className="order-1 sm:order-2 py-2 px-6 bg-purple-600 text-white font-medium rounded-md hover:bg-purple-700 focus:outline-none transition-colors"
               >
                 Create Event
               </button>
