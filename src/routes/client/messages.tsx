@@ -44,32 +44,42 @@ function RouteComponent() {
     }
 
     const fetchUpdatedConversations = async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("participants")
         .select(
           `
+        id,
+        conversation_id,
+        conversations:conversations!conversation_id (
           id,
-          conversation_id,
-          conversations:conversations!conversation_id (
+          title,
+          last_message_text,
+          last_message_time,
+          participants:participants (
             id,
-            title,
-            last_message_text,
-            last_message_time,
-            participants:participants (
+            user_id,
+            profiles:profiles!user_id (
               id,
-              user_id,
-              profiles:profiles!user_id (
-                id,
-                email
-              )
+              email
             )
           )
-        `
+        )
+      `
         )
         .eq("user_id", user.id);
 
-      if (data) {
-        setConversations(data);
+      const sortedData = data?.sort((a, b) => {
+        const timeA = new Date(
+          a.conversations?.last_message_time || 0
+        ).getTime();
+        const timeB = new Date(
+          b.conversations?.last_message_time || 0
+        ).getTime();
+        return timeB - timeA; // Descending order (newest first)
+      });
+
+      if (sortedData) {
+        setConversations(sortedData);
       }
     };
 
@@ -150,7 +160,7 @@ function RouteComponent() {
                     </div>
 
                     <p className="text-sm text-neutral-600 truncate max-w-full">
-                      {conversation.last_message_text || "No messages yet"}
+                      {conversation.title || "No messages yet"}
                     </p>
 
                     <div className="flex items-center mt-2 text-xs text-neutral-500">

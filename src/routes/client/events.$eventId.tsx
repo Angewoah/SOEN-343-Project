@@ -158,6 +158,7 @@ function EventDetailsComponent() {
         (await createNewConversation({
           participantIds,
           eventId: event.id,
+          title: event.title!,
         })) || null;
 
       if (newConversation) {

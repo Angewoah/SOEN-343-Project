@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { getSupabaseClient } from "../../supabase/client";
 import { useState } from "react";
+import { useUser } from "../../hooks/useUser";
 
 export const Route = createFileRoute("/(auth)/login")({
   component: RouteComponent,
@@ -9,6 +10,7 @@ export const Route = createFileRoute("/(auth)/login")({
 function RouteComponent() {
   const supabase = getSupabaseClient();
 
+  const { user } = useUser();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -17,17 +19,35 @@ function RouteComponent() {
 
   const signIn = async () => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { data: signInData, error } =
+        await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
 
       if (error) {
         setError("Invalid email or password");
         console.error("Error signing in:", error.message);
       } else {
         console.log("Sign-in successful");
-        navigate({ to: "/organization/dashboard" });
+
+        const { data: userData, error: userError } =
+          await supabase.auth.getUser();
+
+        if (userError) {
+          console.error("Error fetching user data:", userError.message);
+        } else {
+          const userRole = userData.user.user_metadata?.role || "attendee";
+
+          // Navigate based on user role
+          if (userRole === "organizer") {
+            navigate({ to: "/organization/dashboard" });
+          } else {
+            navigate({ to: "/client/events" });
+          }
+
+          console.log(`Navigated to ${userRole} dashboard`);
+        }
       }
     } catch (err) {
       setError("An unexpected error occurred");

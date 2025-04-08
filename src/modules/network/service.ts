@@ -15,14 +15,16 @@ const supabase = getSupabaseClient();
 export async function createNewConversation({
     participantIds,
     eventId,
+    title,
   }: {
     participantIds: (string | null)[];
     eventId: number;
+    title: string;
   }) {try {
         const { data: conversationData, error: conversationError } = await supabase
         .from("conversations")
         .insert({
-            title: "New conversation",
+            title,
             event_id: eventId,
         })
         .select()
@@ -79,6 +81,8 @@ export async function fetchUserConversations(user: User) {
           )
         `)
         .eq("user_id", user.id);
+
+        
 
         const sortedData = data?.sort((a, b) => {
             const timeA = new Date(a.conversations?.last_message_time || 0).getTime();
@@ -158,4 +162,11 @@ export async function fetchUserConversations(user: User) {
       console.error("Error sending message", err);
       return { error: err };
     }
+  }
+
+  export async function setMessageAsRead(messageId: number) {
+    const { error } = await supabase
+        .from("messages")
+        .update({ "is_read": true})
+        .eq("id", messageId);
   }

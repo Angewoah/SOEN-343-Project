@@ -24,7 +24,7 @@ export function Sidebar() {
     if (error) {
       console.error("Unable to sign out", error);
     } else {
-      navigate({ to: "/" });
+      navigate({ to: "/login" });
     }
   };
   return (
