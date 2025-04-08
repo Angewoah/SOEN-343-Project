@@ -152,8 +152,11 @@ function EventDetailsComponent() {
     try {
       setBookingInProgress(true);
       const userId = String(user.id);
-      const participantIds = [userId, event.organizer_id];
 
+      const participantIds = [user.id];
+      if (user.id != event.organizer_id) {
+        participantIds.push(event.organizer_id);
+      }
       const newConversation =
         (await createNewConversation({
           participantIds,
