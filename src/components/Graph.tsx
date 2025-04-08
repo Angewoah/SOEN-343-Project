@@ -30,14 +30,13 @@ function accumulateBookings(dstArray, bookingData, sum, index) {
 
 // The `props` parameter contains all information necessary to 
 // generate a graph.
-export function Graph({ event, bookingData, className }) {
+export function Graph({ bookingData, className }) {
   const weekStatistics = accumulateBookings([...Array(7).keys()],
     bookingData, 0, 0);
   const chartConfig = {
     labels: [...Array(5).keys()].map((index) => 
       `${6-index} days ago`).concat(["Yesterday",])
       .concat(["Today",]),
-    // datasets is an array of objects where each object represents a set of data to display corresponding to the labels above. for brevity, we'll keep it at one object
     datasets: [
       {
         label: "Bookings",

@@ -164,21 +164,19 @@ function RouteComponent() {
                       />
                       <WeekBookings bookings={weekBookings}/>
                     </div>
-                    <div>
-                      {/*Pass over the fetched data with navigate.*/}
-                      <Link
-                        to="/organization/report/$eventId"
-                        params={{ eventId: `${event.id}` }}
-                        className="font-medium text-md text-white bg-purple-500 hover:bg-purple-700 p-2 border-2 rounded-lg transition-colors text-center"
-                      >
-                        See Report
-                      </Link>
-                    </div>
+                    {/*Pass over the fetched data using the URL.*/}
+                    <Link
+                      to="/organization/report/$data"
+                      params={{ data: JSON.stringify({id: event.id, booking: bookingData, title: event.title}) }}
+                      className="font-medium text-md text-white bg-purple-500 hover:bg-purple-700 p-2 border-2 rounded-lg transition-colors text-center"
+                    >
+                      See Report
+                    </Link>
                   </div>
                   <Graph 
                     event={event} 
                     bookingData={bookingData}
-                    className="w-full"
+                    className="w-full h-full"
                   />
                 </div>
               </div>
