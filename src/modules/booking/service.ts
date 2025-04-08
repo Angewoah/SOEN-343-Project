@@ -178,13 +178,13 @@ export async function createBooking(bookingData: {
   type?: string;
 }) {
   const supabase = getSupabaseClient();
-  
+    
   const { data, error } = await supabase
     .from('bookings')
     .insert({
       user_id: bookingData.user_id,
       event_id: bookingData.event_id,
-      registration_status: bookingData.status || 'pending',
+      registration_status: 'confirmed',
       type: bookingData.type || 'attendee'
     })
     .select()

@@ -12,6 +12,7 @@ function RouteComponent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [userRole, setUserRole] = useState("attendee");
   const navigate = useNavigate();
 
   const supabase = getSupabaseClient();
@@ -24,6 +25,7 @@ function RouteComponent() {
         data: {
           first_name: firstName,
           last_name: lastName,
+          role: userRole,
         },
       },
     };
@@ -38,7 +40,9 @@ function RouteComponent() {
         console.error("Error signing up:", error.message);
       } else {
         console.log("Sign-up and profile update successful");
-        navigate({ to: "/organization/dashboard" });
+        userRole == "organizer"
+          ? navigate({ to: "/organization/events/inactive" })
+          : navigate({ to: "/client/events" });
       }
     } catch (err) {
       setError("An unexpected error occurred");
@@ -88,6 +92,29 @@ function RouteComponent() {
             onChange={(e) => setPassword(e.target.value)}
             className="mb-4 p-3 border-1 border-neutral-300 rounded w-full focus:outline-none focus:ring-1 focus:ring-neutral-500 text-black"
           />
+          <h3 className="text-left w-full mb-1">I am joining as</h3>
+          <div className="flex gap-4 w-full mb-6">
+            <div
+              className={`flex-1 p-3 border rounded cursor-pointer text-center ${
+                userRole === "attendee"
+                  ? "bg-purple-100 border-purple-400"
+                  : "border-neutral-300 hover:border-purple-300"
+              }`}
+              onClick={() => setUserRole("attendee")}
+            >
+              Attendee
+            </div>
+            <div
+              className={`flex-1 p-3 border rounded cursor-pointer text-center ${
+                userRole === "organizer"
+                  ? "bg-purple-100 border-purple-400"
+                  : "border-neutral-300 hover:border-purple-300"
+              }`}
+              onClick={() => setUserRole("organizer")}
+            >
+              Organizer
+            </div>
+          </div>
 
           <button
             className="text-lg tracking-wide w-full bg-purple-400 text-white px-6 py-3 rounded-xl shadow-md hover:bg-purple-300 transition-colors cursor-pointer"

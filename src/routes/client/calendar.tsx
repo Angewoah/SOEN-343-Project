@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   format,
   startOfMonth,
@@ -39,6 +39,9 @@ function CalendarComponent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
+  const [selectedEvent, setSelectedEvent] = useState<BookingWithDetails | null>(null);
+  const [clickPosition, setClickPosition] = useState({ x: 0, y: 0 });
+
 
   const safeParseDate = (dateStr: string | null | undefined): Date | null => {
     if (!dateStr) return null;
@@ -151,6 +154,130 @@ function CalendarComponent() {
     }
   };
 
+  const handleEventClick = (e: React.MouseEvent, booking: BookingWithDetails) => {
+    e.stopPropagation(); 
+  
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    
+    setClickPosition({ 
+      x: rect.right, 
+      y: rect.top    
+    });
+    
+    setSelectedEvent(booking);
+  };
+
+  const EventPopup = () => {
+    if (!selectedEvent) return null;
+  
+    const [isVisible, setIsVisible] = useState(false);
+    const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+      if (e.target === e.currentTarget) {
+        // Trigger fade out animation before closing
+        setIsVisible(false);
+        setTimeout(() => {
+          setSelectedEvent(null);
+        }, 300); // Match this with animation duration
+      }
+    };
+
+  const popupRef = useRef<HTMLDivElement>(null);
+  
+  const initialPosition = {
+    top: Math.min(clickPosition.y - 10, window.innerHeight - 400),
+    left: Math.min(clickPosition.x + 10, window.innerWidth - 420),
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 10);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <div 
+      className={`absolute inset-0 z-40 transition-opacity duration-300 `}
+      style={{ top: `${window.scrollY}px`, height: '100vh' }}
+      onClick={handleBackdropClick}
+    >
+      <div 
+        ref={popupRef}
+        style={{
+          position: 'absolute',
+          top: `${initialPosition.top}px`,
+          left: `${initialPosition.left}px`,
+          maxWidth: '400px',
+          maxHeight: '80vh',
+          zIndex: 50,
+          transform: isVisible ? 'scale(1)' : 'scale(0.95)',
+          opacity: isVisible ? 1 : 0,
+          transition: 'transform 0.3s ease, opacity 0.3s ease',
+        }}
+        className="bg-gradient-to-tl from-blue-400 to-blue-100 rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex justify-between items-start p-4 ">
+          <h3 className="text-lg font-semibold text-black">
+            {selectedEvent.event?.title || "Event Details"}
+          </h3>
+          <button 
+            onClick={() => {
+              setIsVisible(false);
+              setTimeout(() => setSelectedEvent(null), 300);
+            }}
+            className="text-black"
+          >
+            <svg className="w-8 h-8 hover:cursor-pointer hover:rounded-4xl hover:bg-blue-200 p-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        
+        <div className="p-4 py-8 bg-blue-50">
+          <div className="flex flex-col md:flex-row md:space-x-4">
+            {/* Left Column */}
+            <div className="md:w-1/2 space-y-4">
+              <div className="flex items-start">
+                <ClockIcon className="w-5 h-5 mr-3 text-blue-500 flex-shrink-0 mt-0.5" />
+                <div>
+                  {selectedEvent.event?.timeslot ? (
+                    <p className="font-medium">
+                      {formatBookingDate(selectedEvent.event.timeslot.start_time || "")}
+                    </p>
+                  ) : (
+                    <p className="text-gray-500">Not scheduled</p>
+                  )}
+                  <p className="text-sm text-gray-500">
+                    {selectedEvent.event?.duration_minutes} minutes
+                  </p>
+                </div>
+              </div>
+            </div>
+        
+            {/* Right Column */}
+            <div className="md:w-1/2 space-y-4">
+              {selectedEvent.event?.venue && (
+                <div className="flex items-start">
+                  <MapPinIcon className="w-5 h-5 mr-3 text-blue-500 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-medium">{selectedEvent.event.venue.name}</p>
+                    <p className="text-sm text-gray-500">
+                      {selectedEvent.event.venue.address}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  );
+  };
+
   // Generate the days for the current month view
   const monthDays = () => {
     const monthStart = startOfMonth(currentMonth);
@@ -247,8 +374,9 @@ function CalendarComponent() {
                     ? eventsForDay.map((booking) => (
                         <div
                           key={booking.id}
-                          className="p-1 mb-1 text-xs bg-blue-100 text-blue-800 rounded truncate"
+                          className="p-1 mb-1 text-xs bg-blue-100 text-blue-800 rounded truncate cursor-pointer hover:bg-blue-200"
                           title={booking.event?.title || "Unnamed Event"}
+                          onClick={(e) => handleEventClick(e, booking)}
                         >
                           {formatBookingDate(
                             booking.event?.timeslot?.start_time || ""
@@ -299,7 +427,7 @@ function CalendarComponent() {
           <span className="ml-3 text-gray-600">Loading your bookings...</span>
         </div>
       ) : error ? (
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="bg-white rounded-lg shadow-lg p-6">
           <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-md mb-4">
             <div className="flex items-start">
               <ExclamationCircleIcon className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
@@ -408,6 +536,7 @@ function CalendarComponent() {
           </div>
         </div>
       )}
+      {selectedEvent && <EventPopup />}
     </div>
   );
 }
