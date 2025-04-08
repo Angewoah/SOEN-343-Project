@@ -318,6 +318,50 @@ export type Database = {
           },
         ]
       }
+      resource_dir: {
+        Row: {
+          id?: number
+          resource_id: number
+        }
+        Insert: {
+          id?: number
+          resource_id: number
+        }
+        Update: {
+          id?: number
+          resource_id: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: true
+            referencedRelation: "resources"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      resources: {
+        Row: {
+          id?: number
+          name?: string
+          status?: string | null
+          amount?: number
+        }
+        Insert: {
+          id?: number
+          name?: string
+          status?: string | null
+          amount?: number
+        }
+        Update: {
+          id?: number
+          name?: string
+          status?: string | null
+          amount?: number
+        }
+        Relationships: []
+      }
       venues: {
         Row: {
           address: string | null
