@@ -13,11 +13,49 @@ function RouteComponent() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [userRole, setUserRole] = useState("attendee");
+  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const navigate = useNavigate();
 
   const supabase = getSupabaseClient();
 
+  const AVAILABLE_INTERESTS = ["educational", "entertainment", "networking"];
+
+  const getInterestTagColor = (interest: string) => {
+    const isSelected = selectedInterests.includes(interest);
+    switch (interest) {
+      case 'educational':
+        return isSelected 
+          ? 'bg-blue-500 text-white' 
+          : 'bg-blue-100 text-blue-700 hover:bg-blue-200';
+      case 'entertainment':
+        return isSelected 
+          ? 'bg-purple-500 text-white' 
+          : 'bg-purple-100 text-purple-700 hover:bg-purple-200';
+      case 'networking':
+        return isSelected 
+          ? 'bg-green-500 text-white' 
+          : 'bg-green-100 text-green-700 hover:bg-green-200';
+      default:
+        return isSelected 
+          ? 'bg-gray-500 text-white' 
+          : 'bg-gray-100 text-gray-700 hover:bg-gray-200';
+    }
+  };
+
+  const toggleInterest = (newInterest: string) => 
+  {
+    if(selectedInterests.includes(newInterest)){
+      setSelectedInterests(selectedInterests.filter((interest) => interest != newInterest));
+    }
+    else{
+      setSelectedInterests( [...selectedInterests, newInterest] );
+    }
+  }
+
   const signUp = async () => {
+
+    const userInterests = selectedInterests.join();
+
     const signUpData = {
       email,
       password,
@@ -26,12 +64,12 @@ function RouteComponent() {
           first_name: firstName,
           last_name: lastName,
           role: userRole,
+          interests: userInterests
         },
       },
     };
 
     console.log("Sign-up data being sent:", signUpData);
-
     try {
       const { data, error } = await supabase.auth.signUp(signUpData);
 
@@ -113,6 +151,21 @@ function RouteComponent() {
               onClick={() => setUserRole("organizer")}
             >
               Organizer
+            </div>
+          </div>
+          <h3 className="text-left w-full mb-1">I am interested in</h3>
+          <div className="flex gap-4 w-full mb-6">
+            <div className="flex flex-wrap gap-2">
+              {AVAILABLE_INTERESTS.map(interest => (
+                <button
+                  key={interest}
+                  type="button" 
+                  onClick={() => toggleInterest(interest)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:cursor-pointer ${getInterestTagColor(interest)}`}
+                >
+                  {interest}
+                </button>
+              ))}
             </div>
           </div>
 

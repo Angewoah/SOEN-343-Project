@@ -10,6 +10,7 @@ import { fetchEventById, updateEvent } from "../../modules/event/service";
 import { useEffect, useState } from "react";
 import { Database } from "../../supabase/types";
 import { sendEventPromotionMail } from "../../modules/mail/mailService";
+import { getUserProfilesWithInterests } from "../../modules/profile/service"
 
 type Event = Database["public"]["Tables"]["events"]["Row"];
 
@@ -25,6 +26,9 @@ function RouteComponent() {
   const [event, setEvent] = useState<Event | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [tags, setTags] = useState("");
+  const [numberUsersAddressedByEmail, setNumberUsersAddressedByEmail] = useState(0)
+  const [emailDialogOpen, setEmailDialogOpen] = useState(false);
 
   const eventIdNum = Number(eventId);
 
@@ -44,6 +48,7 @@ function RouteComponent() {
     if (event) {
       setTitle(event.title ?? "");
       setDescription(event.description ?? "");
+      setTags(event.tags ?? "");
     }
   }, [event]);
 
@@ -82,6 +87,23 @@ function RouteComponent() {
     return `https://www.instagram.com/`;
   }
 
+  function updateNumberUsersAddressedByEmail()
+  {
+    getUserProfilesWithInterests(tags)
+    .then( (profiles) => {
+      if(profiles)
+      {
+        setNumberUsersAddressedByEmail(profiles.length);
+      }
+      else
+      {
+        setNumberUsersAddressedByEmail(0);
+      }
+    }).catch( () =>{
+      setNumberUsersAddressedByEmail(0);
+    });
+  }
+
   return (
     <div className="w-full flex flex-col items-center">
       <div className="h-20 w-full flex bg-white items-center rounded-t-4xl border-b-1 border-b-neutral-200">
@@ -93,6 +115,79 @@ function RouteComponent() {
         </Link>
         <h1 className="text-lg font-mono ml-4">Edit Event</h1>
       </div>
+
+      {emailDialogOpen ? (
+        <>
+          <div
+            style={{backgroundColor: "rgb(0, 0, 0, 0.3)", position: 'fixed', top: 0, left: 0, width: '100%', height: '100%'}}
+            onClick={() => setEmailDialogOpen(false)}
+          />
+          <div style={{position: 'fixed', left: '50%', top: '50%', transform: 'translate(-50%, -50%)'}}>
+            <div className="border-2 border-neutral-300 p-4 mb-4 rounded-lg bg-white">
+              <label htmlFor="title" className="block text-2xl font-bold text-gray-700">
+                Send promotional emails
+              </label>
+              <div className="w-full py-16">
+                {numberUsersAddressedByEmail > 0 ? (
+                  <>
+                  <p>You are about to send emails to <strong>{numberUsersAddressedByEmail}</strong> users.</p>
+                  <p>Continue?</p>
+                  </>
+                ):(
+                  <>
+                  <p>No users to send event.</p>
+                  </>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2">
+              {numberUsersAddressedByEmail > 0 && (
+                <>
+                  <button
+                    type="button" className="font-medium text-center text-md bg-purple-500 text-white py-2 px-4 rounded-md hover:bg-purple-700 p-2 rounded-lg transition-colors border-2 border-neutral-300"
+                    onClick={() =>
+                      {
+                        sendEventPromotionMail(
+                          title,
+                          description,
+                          tags,
+                          "http://localhost:3001/client/events/" + eventId,
+                          ""
+                        )
+                        setEmailDialogOpen(false)
+                      }
+                    }>
+                    Send
+                  </button>
+                  <button
+                    type="button" className="font-medium text-center text-md text-black hover:bg-neutral-100 p-2 rounded-lg transition-colors border-2 border-neutral-300"
+                    onClick={() =>
+                      {
+                        sendEventPromotionMail(
+                          title,
+                          description,
+                          tags,
+                          "http://localhost:3001/client/events/" + eventId,
+                          "merouaneissad@gmail.com"
+                        )
+                        setEmailDialogOpen(false)
+                      }
+                    }>
+                    Send One Email Only
+                  </button>
+                </>
+              )}
+              <button
+                type="button" className="font-medium text-center text-md bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-700 rounded-lg transition-colors border-2 border-neutral-300"
+                onClick={() =>
+                  setEmailDialogOpen(false)
+                }>
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </>
+      ) : null}
 
       <div className="w-full max-w-1/4 py-16">
         <div className="flex flex-col gap-y-16">
@@ -172,16 +267,12 @@ function RouteComponent() {
             <button
               type="button"
               className="w-full text-md font-medium bg-purple-500 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition-colors focus:outline-none cursor-pointer"
-              onClick={() =>
-                sendEventPromotionMail(
-                  title,
-                  description,
-                  "http://localhost:3001/client/events/" + eventId,
-                  "merouaneissad@gmail.com" //onazijosh@gmail.com
-                )
-              }
+              onClick={() => {
+                updateNumberUsersAddressedByEmail();
+                setEmailDialogOpen(true);
+              }}
             >
-              Send Email
+              Send promotional emails
             </button>
           </div>
         </div>
