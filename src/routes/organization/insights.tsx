@@ -120,9 +120,6 @@ function RouteComponent() {
           </button>
           <div 
             className="max-w-32 cursor-pointer"
-            onClick={() => {
-              
-            }}
           >
             { sortDropdownVisible ? 
               <ul className="border-2 rounded-lg border-neutral-300 absolute bg-white z-50 w-32">
