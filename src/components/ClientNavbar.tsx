@@ -43,6 +43,14 @@ export function ClientNavbar() {
         >
           Messages
         </Link>
+
+        <Link
+          to="/client/payment"
+          className="text-base font-mono hover:text-purple-600"
+        >
+          Orders 
+        </Link>
+
         <Link
           to="/organization/events/all"
           className="text-base font-mono hover:text-purple-600 cursor-pointer"
