@@ -32,7 +32,7 @@ export function Sidebar() {
       <div className="h-full flex flex-col text-lg w-full max-w-64 px-4 pt-3 border-r border-neutral-300">
         <div className="flex flex-col gap-y-4 mb-64">
           <Link
-            to="/organization/events/inactive"
+            to="/organization/events/all"
             activeProps={{
               className: "font-medium text-purple-600/80",
             }}

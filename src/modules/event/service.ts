@@ -61,15 +61,17 @@ export async function createTimeslot(
 }
 
 
-export async function createEvent(
+export const createEvent = async (
   organizerId: string,
   title: string,
   description: string,
   durationMinutes: number,
   maxAttendees: number,
-  tags: string[] = [] 
-) {
+  tags: string[]
+): Promise<number> => {
   try {
+    const supabase = getSupabaseClient();
+    
     const { data, error } = await supabase
       .from('events')
       .insert({
@@ -79,18 +81,20 @@ export async function createEvent(
         duration_minutes: durationMinutes,
         max_attendees: maxAttendees,
         status: 'inactive',
-        tags: tags.join(','), 
+        tags: tags.join(',')
       })
-      .select()
+      .select('id')
       .single();
     
     if (error) throw error;
-    return data;
-  } catch (err) {
-    console.error("Error creating event:", err);
-    throw err;
+    
+    // Return the new event ID
+    return data.id;
+  } catch (error) {
+    console.error("Error creating event:", error);
+    throw error;
   }
-}
+};
 
 export async function updateEvent(eventId: number, title: string, description: string) {
   try {
