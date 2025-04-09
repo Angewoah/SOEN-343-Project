@@ -71,13 +71,13 @@ export function Sidebar() {
             Insights
           </Link>
           <Link
-            to="/organization/payment"
+            to="/organization/resource"
             activeProps={{
               className: "font-medium text-purple-600/80",
             }}
             className="text-base rounded-sm p-1 hover:bg-neutral-200/70 transition-colors"
           >
-            Payment
+            Payment and Resources
           </Link>
           <Link
             to="/organization/settings"

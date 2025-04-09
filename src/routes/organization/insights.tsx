@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useLoaderData, createFileRoute, Link } from "@tanstack/react-router";
 import { 
   ChevronDownIcon,
@@ -102,14 +102,14 @@ function RouteComponent() {
         }
       }}
     >
-      By {name}
+      {name}
     </li>
   });
   
   return (
     <>
       <Sidebar />
-      <div className="w-full px-72 justify-end-safe pt-4">
+      <div className="w-full flex flex-col px-72 py-4">
         <h1 className="text-4xl">Insights</h1>
         <div className="mt-10">
           <button 
@@ -119,7 +119,7 @@ function RouteComponent() {
               setSortDropdownVisible(!sortDropdownVisible);
             }}
           >
-            Sort 
+            Order by: {sortMode}
             <ChevronDownIcon className="w-4"/>
           </button>
           <div 
@@ -146,7 +146,7 @@ function RouteComponent() {
                 className="border-2 border-neutral-300 rounded-lg my-4 p-4 overflow-hidden"
               >
                 <div className="text-xl font-bold">{event.title}</div>
-                <div className="flex flex-row">
+                <div className="flex flex-row items-center">
                   <div className="flex flex-col justify-between items-center">
                     <div className="py-4">
                       <StatDisplay 
@@ -166,8 +166,8 @@ function RouteComponent() {
                     </div>
                     {/*Pass over the fetched data using the URL.*/}
                     <Link
-                      to="/organization/report/$data"
-                      params={{ data: JSON.stringify({id: event.id, booking: bookingData, title: event.title}) }}
+                      to="/organization/report"
+                      state={{ data: {id: event.id, booking: bookingData, title: event.title} }}
                       className="font-medium text-white bg-purple-500 hover:bg-purple-700 p-2 border-2 rounded-lg transition-colors text-center"
                     >
                       See Report
@@ -176,7 +176,7 @@ function RouteComponent() {
                   <Graph 
                     event={event} 
                     bookingData={bookingData}
-                    className="w-full"
+                    className="w-full h-full"
                   />
                 </div>
               </div>

@@ -5,7 +5,7 @@ import { fetchEvents } from "../../modules/event/service";
 import { fetchResourceFrom } from "../../modules/resource/service";
 import { getSupabaseClient } from "../../supabase/client";
 
-export const Route = createFileRoute("/organization/payment")({
+export const Route = createFileRoute("/organization/resource")({
   component: RouteComponent,
   loader: async () => {
     const { data, error } = await getSupabaseClient().auth.getUser();
@@ -32,7 +32,7 @@ export const Route = createFileRoute("/organization/payment")({
 
 const VISIBLE_RESOURCES = 3;
 function RouteComponent() {
-  const resourceSetArr = useLoaderData({ from: "/organization/payment" }) ?? [];
+  const resourceSetArr = useLoaderData({ from: "/organization/resource" }) ?? [];
   
   return (
     <>
@@ -60,7 +60,7 @@ function RouteComponent() {
               }
             </div>
             <Link
-              to="/organization/resource/$eventId"
+              to="/organization/edit-resource/$eventId"
               params={{eventId: entry.event.id}}
               className="font-medium text-white bg-purple-500 hover:bg-purple-700 p-2 border-2 rounded-lg transition-colors text-center mt-4 px-6"
             >
