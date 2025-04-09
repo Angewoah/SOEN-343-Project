@@ -1,7 +1,11 @@
 import { createFileRoute, useLoaderData } from "@tanstack/react-router";
 import { Sidebar } from "../../components/Sidebar";
+import { ResourceCard } from "../../components/ResourceCard";
 import { fetchEvents } from "../../modules/event/service";
-import { addResource } from "../../modules/resource/service";
+import { 
+  addResource, 
+  fetchResourceFrom 
+} from "../../modules/resource/service";
 import { getSupabaseClient } from "../../supabase/client";
 
 export const Route = createFileRoute("/organization/payment")({
@@ -14,27 +18,28 @@ export const Route = createFileRoute("/organization/payment")({
     }
 
     const eventArr = await fetchEvents(data.user);
+    const resourceMat = await Promise.all(
+      eventArr.map(async (event) => {
+        return fetchResourceFrom(event.id);
+      })
+    );
     
-    return eventArr;
+    return eventArr.map((event, index) => {
+      return { event: event, resourceArr: resourceMat[index] }
+    });
   }
 });
 
 function RouteComponent() {
   const eventArr = useLoaderData({ from: "/organization/payment" }) ?? [];
   
+  console.log(eventArr);
+  
   return (
     <>
       <Sidebar />
       <div className="w-full flex flex-col px-72 py-4">
-        <button 
-          type="button" 
-          className="font-medium text-md text-white bg-purple-500 hover:bg-purple-700 p-2 border-2 rounded-lg transition-colors text-center flex flex-row place-content-between items-center cursor-pointer w-32"
-          onClick={() => {
-            const id = addResource(41, 'test', 'test_status');
-          }}
-        >
-          Test
-        </button>
+        <h1 className="text-4xl">Payment</h1>
       </div>
     </>
   );

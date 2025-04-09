@@ -13,19 +13,38 @@ export const addResource = async (
   resourceName: string,
   resourceStatus: string
 ): Promise<number> => {
-  try {
-    const supabase = getSupabaseClient();
-    
-    const { data, error } = await supabase
-      .rpc('add_resource_and_link', {
-        event_id: eventId,
-        resource_name: resourceName,
-        resource_status: resourceStatus
-      });
-    
-    return data[0];
-  } catch (error) {
+  const supabase = getSupabaseClient();
+  
+  const { data, error } = await supabase
+    .rpc('add_resource_and_link', {
+      event_id: eventId,
+      resource_name: resourceName,
+      resource_status: resourceStatus
+    });
+  
+  if (error) {
     console.error("Error creating resource:", error);
     throw error;
+    
   }
+  
+  // XXX: Is returning correct data type?
+  return data[0];
+};
+
+export const fetchResourceFrom = async (
+  eventId: number
+): Promise<{ name: string, status: string, amount: string }[]> => {
+  const supabase = getSupabaseClient();
+  
+  const { data, error } = await supabase
+    .rpc('select_resources_of_event', { target_event_id: eventId });
+  
+  if (error) {
+    console.error("Error creating resource:", error);
+    throw new Error(error);
+    
+  }
+  
+  return data;
 };
