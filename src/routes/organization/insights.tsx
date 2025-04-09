@@ -94,7 +94,11 @@ function RouteComponent() {
             
           }
           
-          default:
+          default: {
+            console.err("Unknown sort \"" + String(name) + "\"");
+            break;
+            
+          }
         }
       }}
     >
@@ -121,11 +125,10 @@ function RouteComponent() {
           <div 
             className="max-w-32 cursor-pointer"
           >
-            { sortDropdownVisible ? 
+            { sortDropdownVisible &&
               <ul className="border-2 rounded-lg border-neutral-300 absolute bg-white z-50 w-32">
                 {dropdown}
               </ul>
-              : ""
             }
           </div>
           {eventArr.map((entry) => {
@@ -165,7 +168,7 @@ function RouteComponent() {
                     <Link
                       to="/organization/report/$data"
                       params={{ data: JSON.stringify({id: event.id, booking: bookingData, title: event.title}) }}
-                      className="font-medium text-md text-white bg-purple-500 hover:bg-purple-700 p-2 border-2 rounded-lg transition-colors text-center"
+                      className="font-medium text-white bg-purple-500 hover:bg-purple-700 p-2 border-2 rounded-lg transition-colors text-center"
                     >
                       See Report
                     </Link>
