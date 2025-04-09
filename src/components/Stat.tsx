@@ -7,9 +7,9 @@ import {
 
 export function StatDisplay(props) {
   const Icon = props?.icon;
-  return <div className="flex items-center text-sm text-gray-600">
-    <Icon className="w-4 h-4 mr-2 text-purple-500"/>
-    {props?.text}
+  return <div className="flex flex-row items-center gap-2 [&:not(:last-child)]:border-b-2 border-purple-100 py-1">
+    <Icon className="w-4 h-4 text-purple-500"/>
+    <span className="w-full">{props?.text}</span>
   </div>
 }
 

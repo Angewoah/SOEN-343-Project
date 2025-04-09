@@ -143,11 +143,11 @@ function RouteComponent() {
             return (
               <div
                 key={event.id}
-                className="border-2 border-neutral-300 rounded-lg my-4 p-2"
+                className="border-2 border-neutral-300 rounded-lg my-4 p-4 overflow-hidden"
               >
-                <h2 className="text-lg font-semibold pb-2">{event.title}</h2>
-                <div className="place-content-between gap-4 flex flex-row justify-center">
-                  <div className="flex flex-col justify-between items-center pb-4">
+                <div className="text-xl font-bold">{event.title}</div>
+                <div className="flex flex-row">
+                  <div className="flex flex-col justify-between items-center">
                     <div className="py-4">
                       <StatDisplay 
                         text={`Attendees: ${attendees}/${event.max_attendees}`}
@@ -176,7 +176,7 @@ function RouteComponent() {
                   <Graph 
                     event={event} 
                     bookingData={bookingData}
-                    className="w-full h-full"
+                    className="w-full"
                   />
                 </div>
               </div>

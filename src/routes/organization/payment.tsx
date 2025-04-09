@@ -2,10 +2,7 @@ import { createFileRoute, useLoaderData, Link } from "@tanstack/react-router";
 import { Sidebar } from "../../components/Sidebar";
 import { ResourceCard } from "../../components/ResourceCard";
 import { fetchEvents } from "../../modules/event/service";
-import { 
-  addResource, 
-  fetchResourceFrom 
-} from "../../modules/resource/service";
+import { fetchResourceFrom } from "../../modules/resource/service";
 import { getSupabaseClient } from "../../supabase/client";
 
 export const Route = createFileRoute("/organization/payment")({
@@ -43,9 +40,9 @@ function RouteComponent() {
       <div className="w-full flex flex-col px-72 py-4 ">
         <h1 className="text-4xl mb-4">Payment</h1>
         {resourceSetArr.map((entry) => {
-          return <div className="relative flex flex-col p-2 border-2 border-neutral-300 rounded-lg my-2 bg-gradient-to-t from-white to-transparent z-10 overflow-hidden max-w-64 items-center">
+          return <div className="relative flex flex-col p-4 border-2 border-neutral-300 rounded-lg my-2 bg-gradient-to-t from-white to-transparent z-10 overflow-hidden max-w-64 items-center">
             <div className="relative w-full">
-              <div className="text-left font-medium mb-2">{entry.event.title}</div>
+              <div className="text-xl font-bold">{entry.event.title}</div>
               {entry.resourceArr.length === 0 ? <div className="text-gray-600 text-center">(no resources)</div> : <div>
                   <div>Resources:</div>
                   <ul className="list-inside list-disc pr-2 w-full">
@@ -64,7 +61,7 @@ function RouteComponent() {
             </div>
             <Link
               to="/organization/resource/$eventId"
-              params={entry.event.id}
+              params={{eventId: entry.event.id}}
               className="font-medium text-white bg-purple-500 hover:bg-purple-700 p-2 border-2 rounded-lg transition-colors text-center mt-4 px-6"
             >
               Edit

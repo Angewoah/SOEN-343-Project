@@ -5,6 +5,7 @@ import {
   Link, 
   useParams 
 } from '@tanstack/react-router';
+import { XMarkIcon } from "@heroicons/react/24/solid";
 import { fetchEventBookings } from '../../modules/booking/service';
 import { fetchEvents } from '../../modules/event/service';
 import { Graph } from "../../components/Graph";
@@ -26,13 +27,20 @@ function RouteComponent() {
   const params = JSON.parse(useParams({ strict: false }).data);
   
   return (
-    <>
-      <Sidebar />
+    <div className="w-full flex flex-col items-center">
+      <div className="h-20 w-full flex bg-white items-center rounded-t-4xl border-b-1 border-b-neutral-200">
+        <Link
+          to="/organization/insights"
+          className="px-4 cursor-pointer border-r-1 border-r-neutral-900"
+        >
+          <XMarkIcon className="w-6 h-6" />
+        </Link>
+        <h1 className="text-lg font-mono ml-4">{data.title} - Report</h1>
+      </div>
       <div className="w-full flex flex-col px-72 py-4">
-        <h1 className="text-4xl mb-10">{data.title} - Report</h1>
         <Graph bookingData={params.booking} className="w-full pb-8"/>
         <div>
-          <h2 className="text-lg font-semibold pb-4">Booking Data</h2>
+          <div className="text-xl font-bold pb-4">Booking Data</div>
           <table className="table-auto border-separate p-2 border-1 border-purple-600 rounded-lg w-full">
             <thead>
               <tr className="bg-purple-100">
@@ -55,6 +63,6 @@ function RouteComponent() {
           </table>
         </div>
       </div>
-    </>
+    </div>
   );
 }
