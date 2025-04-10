@@ -321,6 +321,60 @@ export type Database = {
           },
         ]
       }
+      resource_dir: {
+        Row: {
+          id?: number
+          event_id: number | null
+          resource_id: number | null
+        }
+        Insert: {
+          id?: number
+          event_id: number | null
+          resource_id: number | null
+        }
+        Update: {
+          id?: number
+          event_id: number
+          resource_id: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: true
+            referencedRelation: "resources"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      resources: {
+        Row: {
+          id?: number
+          name?: string
+          status?: string | null
+          amount?: number
+        }
+        Insert: {
+          id?: number
+          name?: string
+          status?: string | null
+          amount?: number
+        }
+        Update: {
+          id?: number
+          name?: string
+          status?: string | null
+          amount?: number
+        }
+        Relationships: []
+      }
       venues: {
         Row: {
           address: string | null

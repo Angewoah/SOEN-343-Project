@@ -1,7 +1,7 @@
 import React from "react";
 import Chart from "chart.js/auto";
 import { CategoryScale } from "chart.js";
-import { Line, Pie } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 
 Chart.register(CategoryScale);
 
@@ -11,7 +11,7 @@ function accumulateBookings(dstArray, bookingData, sum, index) {
     
   }
   const threshold = new Date();
-  threshold.setDate(threshold.getDate() - 6 + index);
+  threshold.setTime(threshold.getTime() - (6-index)*(24*60*60*1000));
   const dayBookings = new Array(0);
   const remainder = new Array(0);
   for (let i = 0; i < bookingData.length; ++i) {

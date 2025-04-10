@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useLoaderData, createFileRoute, Link } from "@tanstack/react-router";
 import { 
   ChevronDownIcon,
@@ -94,41 +94,41 @@ function RouteComponent() {
             
           }
           
-          default:
+          default: {
+            console.err("Unknown sort \"" + String(name) + "\"");
+            break;
+            
+          }
         }
       }}
     >
-      By {name}
+      {name}
     </li>
   });
   
   return (
     <>
       <Sidebar />
-      <div className="w-full px-72 justify-end-safe pt-4">
+      <div className="w-full flex flex-col px-72 py-4">
         <h1 className="text-4xl">Insights</h1>
         <div className="mt-10">
           <button 
             type="button" 
             className="font-medium text-md text-white bg-purple-500 hover:bg-purple-700 p-2 border-2 rounded-lg transition-colors text-center flex flex-row place-content-between items-center cursor-pointer w-32"
-            onClick={() => {
+            onClick={(e) => {
               setSortDropdownVisible(!sortDropdownVisible);
             }}
           >
-            Sort 
-            <ChevronDownIcon className="w-4"/>
+            <div className="w-full">Order by: {sortMode}</div>
+            <ChevronDownIcon className="w-6"/>
           </button>
           <div 
             className="max-w-32 cursor-pointer"
-            onClick={() => {
-              
-            }}
           >
-            { sortDropdownVisible ? 
+            { sortDropdownVisible &&
               <ul className="border-2 rounded-lg border-neutral-300 absolute bg-white z-50 w-32">
                 {dropdown}
               </ul>
-              : ""
             }
           </div>
           {eventArr.map((entry) => {
@@ -143,11 +143,11 @@ function RouteComponent() {
             return (
               <div
                 key={event.id}
-                className="border-2 border-neutral-300 rounded-lg my-4 p-2"
+                className="border-2 border-neutral-300 rounded-lg my-4 p-4 overflow-hidden"
               >
-                <h2 className="text-lg font-semibold pb-2">{event.title}</h2>
-                <div className="place-content-between gap-4 flex flex-row justify-center">
-                  <div className="flex flex-col justify-between items-center pb-4">
+                <div className="text-xl font-bold">{event.title}</div>
+                <div className="flex flex-row items-center">
+                  <div className="flex flex-col justify-between items-center">
                     <div className="py-4">
                       <StatDisplay 
                         text={`Attendees: ${attendees}/${event.max_attendees}`}
@@ -166,9 +166,9 @@ function RouteComponent() {
                     </div>
                     {/*Pass over the fetched data using the URL.*/}
                     <Link
-                      to="/organization/report/$data"
-                      params={{ data: JSON.stringify({id: event.id, booking: bookingData, title: event.title}) }}
-                      className="font-medium text-md text-white bg-purple-500 hover:bg-purple-700 p-2 border-2 rounded-lg transition-colors text-center"
+                      to="/organization/report"
+                      state={{ data: {id: event.id, booking: bookingData, title: event.title} }}
+                      className="font-medium text-white bg-purple-500 hover:bg-purple-700 p-2 border-2 rounded-lg transition-colors text-center"
                     >
                       See Report
                     </Link>
