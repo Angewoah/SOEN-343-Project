@@ -38,7 +38,7 @@ function RouteComponent() {
     <>
       <Sidebar />
       <div className="w-full flex flex-col px-72 py-4 ">
-        <h1 className="text-4xl mb-4">Payment</h1>
+        <h1 className="text-4xl mb-4">Payment and Resources</h1>
         {resourceSetArr.map((entry) => {
           return <div className="relative flex flex-col p-4 border-2 border-neutral-300 rounded-lg my-2 bg-gradient-to-t from-white to-transparent z-10 overflow-hidden max-w-64 items-center">
             <div className="relative w-full">
