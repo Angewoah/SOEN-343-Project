@@ -5,7 +5,7 @@ function Input({ attribute, className, id, reference, value }) {
   
   return <input 
     defaultValue={value} 
-    className={"hover:underline border-2 rounded-lg px-2 border-white hover:border-neutral-300 transition-colors bg-neutral-100 " + className} 
+    className={"hover:underline border-2 rounded-lg px-2 border-white hover:border-neutral-300 transition-colors bg-neutral-100 w-full " + className} 
     id={String(attribute)+id}
     onChange={(v) => {
       reference[attribute] = v.target.value;
@@ -16,8 +16,8 @@ function Input({ attribute, className, id, reference, value }) {
 
 function Field({ attribute, children, id, reference, value }) {
   return (
-    <div className="grid grid-cols-[auto_1fr] text-md ml-2 items-center gap-2">
-      <label htmlFor={String(attribute)+id} className="whitespace-nowrap min-w-[6rem] block font-medium">
+    <div className="grid grid-cols-[8rem_1fr] text-md items-center gap-3">
+      <label htmlFor={String(attribute)+id} className="whitespace-nowrap block font-medium text-gray-700">
         {attribute?.slice(0,1).toUpperCase() 
           + attribute?.slice(1).toLowerCase()}:
       </label>
@@ -30,54 +30,61 @@ function Field({ attribute, children, id, reference, value }) {
 export function ResourceCard(props) {
   const { resource, onUpdate, onDelete } = props;
   if (!resource || onUpdate == null || onDelete == null) {
-    return;
-    
+    return null;
   }
+  
   const { name, amount, status, id } = resource;
-  return <div className="flex flex-row flex flex-col text-md border-neutral-300 border-2 p-2 my-4 rounded-lg overflow-hidden max-w-112 gap-4 justify-between items-end">
-    <div 
-      className=""
-      onBlur={() => {
+  
+  return (
+    <div className="flex flex-col bg-white border border-gray-200 p-4 rounded-lg shadow-sm hover:shadow-md transition-all">
+      <div 
+        className="w-full"
+        onBlur={() => {
+          // Only update if there actually is a change.
+          if (resource.name !== name 
+              || resource.amount !== amount
+              || resource.status !== status) {
+            onUpdate(resource);
+          }
+        }}
+      >
+        <div className="mb-4">
+          <Input 
+            attribute="name"
+            className="text-lg font-semibold py-1" 
+            id={id} 
+            reference={resource}
+            value={name} 
+          />
+        </div>
         
-        // Only update if there actually is a change.
-        if (resource.name!==name 
-            || resource.amount!==amount
-            || resource.status!==status) {
-          onUpdate(resource);
-          
-        }
-      }}
-    >
-      <Input 
-        attribute="name"
-        className="mb-4 font-semibold" 
-        id={id} 
-        reference={resource}
-        value={name} 
-      />
-      <div className="flex flex-col justify-start">
-        <Field 
-          attribute="amount"
-          id={id} 
-          reference={resource}
-          value={amount}
-        />
-        <Field 
-          attribute="status" 
-          id={id}
-          reference={resource}
-          value={status}
-        />
+        <div className="space-y-3 mb-4">
+          <Field 
+            attribute="amount"
+            id={id} 
+            reference={resource}
+            value={amount}
+          />
+          <Field 
+            attribute="status" 
+            id={id}
+            reference={resource}
+            value={status}
+          />
+        </div>
+      </div>
+      
+      <div className="flex justify-end mt-2">
+        <button
+          type="button"
+          className="font-medium text-white bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-md transition-colors"
+          onClick={() => {
+            onDelete(resource.id);
+          }}
+        >
+          Delete
+        </button>
       </div>
     </div>
-    <button
-      type="button"
-      className="font-medium text-md text-white bg-purple-500 hover:bg-purple-700 p-2 border-2 rounded-lg transition-colors text-center cursor-pointer"
-      onClick={() => {
-        onDelete(resource.id);
-      }}
-    >
-      Delete
-    </button>
-  </div>
+  );
 }
