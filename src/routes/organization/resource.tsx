@@ -44,8 +44,14 @@ function RouteComponent() {
             <div className="relative w-full">
               <div className="text-xl font-bold">{entry.event.title}</div>
               {entry.resourceArr.length === 0 ? <div className="text-gray-600 text-center">(no resources)</div> : <div>
-                  <div>Resources:</div>
-                  <ul className="list-inside list-disc pr-2 w-full">
+                  <p className="font-semibold py-2">Resources</p>
+                  <ul 
+                    className={
+                      "list-inside list-disc p-2 w-full border-neutral-300 rounded-lg "
+                        + (entry.resourceArr.length <= VISIBLE_RESOURCES ? "border-2"
+                        : "border-t-2 border-l-2 border-r-2")
+                    }
+                  >
                     {entry.resourceArr.slice(0, VISIBLE_RESOURCES).map((resource, index) => {
                       return <li className="" key={index}>
                         {resource.name}{index == entry.resourceArr.length-1

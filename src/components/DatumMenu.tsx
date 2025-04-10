@@ -8,7 +8,7 @@ export function DatumMenu({ page, children, title }) {
   return <div className="w-full flex flex-col items-center">
     <div className="h-20 w-full flex bg-white items-center rounded-t-4xl border-b-1 border-b-neutral-200">
       <Link
-        to={page && dirArr.slice(0,dirArr.length-1-hasId).join('/') + "/" + page}
+        to={page && dirArr.slice(0, dirArr.length-1-hasId).join('/') + "/" + page}
         className="px-4 cursor-pointer border-r-1 border-r-neutral-900"
       >
         <XMarkIcon className="w-6 h-6" />

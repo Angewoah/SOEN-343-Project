@@ -115,12 +115,12 @@ function RouteComponent() {
           <button 
             type="button" 
             className="font-medium text-md text-white bg-purple-500 hover:bg-purple-700 p-2 border-2 rounded-lg transition-colors text-center flex flex-row place-content-between items-center cursor-pointer w-32"
-            onClick={() => {
+            onClick={(e) => {
               setSortDropdownVisible(!sortDropdownVisible);
             }}
           >
-            Order by: {sortMode}
-            <ChevronDownIcon className="w-4"/>
+            <div className="w-full">Order by: {sortMode}</div>
+            <ChevronDownIcon className="w-6"/>
           </button>
           <div 
             className="max-w-32 cursor-pointer"
